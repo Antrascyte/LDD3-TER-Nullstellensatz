@@ -26,12 +26,99 @@
 \usepackage{dsfont}
 \usepackage{hyperref}
 
-\title{Nullstellensatz et variétés algébriques}
-\author{Robinson Richard, Felice Hopkins, Yael Rougon}
-\date{Mars 2025}
 
 \begin{document}
-\maketitle
 
-"Bonjour monde!"
+\maketitle
+\center \title{\large \textbf{Algèbre commutative et théorème des zéros de Hilbert}}
+\flushleft
+
+
+
+
+\section{Eléments entiers}
+
+Soit  A  et B deux anneaux commutatifs unitaires et $ f & : & A & \to & B $ un morphisme d'anneaux.
+
+\underline{Défintion} - Soit $ x$ $\in$ B. On dit que $x$ est entier sur A s'il existe $ n\in \mathbb{N} $ et $ a_{1}, a_{2}, ... ,a_{n} $\in$ A  tel que :
+
+\centering $ x^n + f(a_{1})x^{n-1}+ ... + f(a_{n-1})x + f(a_{n}) = 0$
+
+\flushleft On appelle cette éqauation une \textit{relation de dépendance intégrale}
+
+\underline{Propriété} -
+Soit $x \in$ B  entier sur A si et seulement si il existe  R sous-anneau de B qui contient A[$x$] et qui soit de type fini comme A-module.
+
+\underline{Démonstration} -
+
+\item[•] Soit $x\in$ B entier dans A. Alors il est clair que l'algèbre A[$x$]  est  engendrée par $x$ dans B et c'est également un  A-module de type fini car engendré par $1,x,...,x^{n-1}$. Donc ici on pose R = A
+
+\item[•] Soit $R$ sous-anneau de $B$ engendré par $r_{1}, ... , r_{m} $ donc $xR \subset R$ donc $\forall  i \in [1,m]$ $\exists\  m_{i,j} \in$ A , $\forall \ j \in [1,m]$ tel que 
+
+\centering $ xr_{i} = \sum_{j=0}^{m} m_{i,j} r_{j} $
+
+\flushleft Notons $  M= (m_{i,j})_{1\le i,j \le m}$. Alors \begin{pmatrix}
+r_{1} \\
+r_{2} \\
+. \\
+r_{m} \\
+\end{pmatrix}
+\in  Ker($$ xI_{m}-M$). Donc on a que si on note C la transposée de la comatrice de $xI_{m}-M$ alors $ C(xI_{m}-M)$ = det($xI_{m}-M$)$I_{m} $ . Donc  det($xI_{m}-M$)$I_{m}$ \times \begin{pmatrix}
+r_{1} \\
+r_{2} \\
+. \\
+r_{m} \\
+\end{pmatrix}$= 0$.\\Cela implique que  $\forall\ i \in [1,m]$ det($xI_{m}-M)r_{i} = 0$ or $1 \in$ R donc det($xI_{m}-M$)$ = 0$. 
+\\En sachant que det($xI_{m}-M$)} est un polymome en $x$, alors il est entier sur A.
+
+Si  $\forall x \in $B , $x$ est entier sur A  alors on dit que B est entier sur A ou que B est une algèbre entière sur A ou encore que $f$ est entier sur A.
+L'ensemble des éléments de B entiers sur A est appellée la \textit{cloture intégrale de A dans B} 
+
+\underline{Lemme} - Soit A et B deux anneaux commutatifs unitaires intègres Si A $\subset$ B et que B est entier sur A alors A est un corps si et seulement si B est un corps.
+
+\underline{Démonstration} - 
+
+\item[•] On suppose que A est un corps. Car B est entier sur A :
+\\$\forall\ b \in $ \exists \ a_{1}, a_{2}, ... ,a_{n} $\in$ A tel que $ b^n + a_{1}b^{n-1}+ ... + a_{n-1}b + a_{n} = 0$ \\Donc $b(b^{n-1} +a_{1}b^{n-2}+ ... + a_{n-1}) = - a_{n} $ donc $(-a_{n}^{-1}(b^{n-1} +a_{1}b^{n-2}+ ... + a_{n-1}))b = 1} $. Donc b est inversible et car B est intègre c'est un corps.
+
+\item[•]Si B est un corps car A $\subset $ B, soit $a \in $ A alors   $a \in $ B donc $a^{-1} \in$ B  on note $a^{-1}= b $ .
+\\Alors $ \exists \ a_{1}, a_{2}, ... ,a_{n}\in$ A tel que $ b^n + a_{1}b^{n-1}+ ... + a_{n-1}b + a_{n} = 0$ donc $b^n =- (a_{1}b^{n-1}+ ... + a_{n-1}b + a_{n}) $ par le même raisonnement on obtient qu'en multipliant par $ a^{n-1}$ on obtient que $a^{-1} = - (a_{1}}+ ... + a_{n-1}a^{n-2} + a_{n}a^{n-1})$ . cela implique que $a^{-1} \in $ A et donc c'est un corps. 
+
+\subsection{Bonus sur les extensions de corps}
+
+\underline{Définitions} - \item[•] Soit k corps commutatif, K est une extension de corps de k si k $\subset$ K et que k est un sous corps de K.
+\\ \textbf{Exemple :} $\mathbb{C} $ est une extension de corps sur le corps des réels $\mathbb{R}$$
+\\ \item[•] On dit que l'extension est :
+
+- \textit{algébrique} si tout élément de k est algébrique dans K (i.e est solution d'un polynome à coefficients dans K )
+\\ - de \textit{type fini} s'il existe $x_{1},..., x_{n} \in $ K tel que K est engendré par k et $x_{1},..., x_{n}$ ( si $n = 1$ , on dit que l'extension est \textit{simple})
+
+On dit qu'un corps K est algébriquement clos si pour tout polynome non constant à coefficients dans K admet au moins une racine dans K.
+
+Soit k $ \subset $ K deux corps, l'ensembles de points entiers de K sur k sont appellés les \textit{éléments algébriques}, les autres sont dits \textit{transcendants}. Si K est entier sur k, on dit que K est algébrique sur k. La clotute intégrale de k dans K est appelée la cloture algébrique de k dans K. Si k est un corps, il existe une clôture algébrique de k :
+c’est une extension k $\subset$ K algébrique et algébriquement close.
+
+On dit qu'un élément de K algébrique sur k est séparable sur k si son polynome minimal a ses  racines distinctes dans une cloture algébrique de K. On dit qu'une extension algébrique K est séparable sur k si tous ces éléments sont séparables sur k.
+
+
+
+\section{Ensembles algébriques}
+
+Soit k un corps commutatif, on note $k^{n} = A^{n}$ \textit{l'espace affine} de $k$. C'est l'ensemble des parties de $A^{n}$ définies comme l'ensemble des racines d'un polynome de $k[X_{1},...,X_{n}]$.
+
+Le cercle unité dans $\mathbb{R}^{2}$ est un élément de de $A^{n}$ défini comme $C= \{(x,y) \in \mathbb{R}^{2} , x^{2} + y^{2} - 1 = 0 \} $ 
+
+
+\centering
+\begin{tikzpicture}
+\draw (0,0) circle (2cm);
+\draw (0,3) -- (0,-3);
+\draw (-3,0) -- (3,0);
+\end{tikzpicture}
+
+
+\flushleft \textbf{Autres exemples} :\\
+ $Z_{1}=\{(x,y) \in \mathbb{R}^{2},\ y = x^{2}  \}$\\
+ $Z_{2} = \{(x,y) \in \mathbb{R} ^{2}, \ x^{3} +  y^{2} = yx^{2} + xy \}  = \{(x,y) \in \mathbb{R} ^{2}, \ x = y\} \cup Z_{1}$  car \ $x^{3} + y^{2} - yx^{2} - xy = (y-x^{2})(y-x) $
+\\ $ Z{3} =\{(x,y,z) \in \mathbb{Q}^{3},\ x^{n} + y^{n} = z^{n}\} $   \ \ \ \ \ ($n\geq 1 $)
 \end{document}
