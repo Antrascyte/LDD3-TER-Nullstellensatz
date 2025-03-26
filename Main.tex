@@ -122,3 +122,21 @@ Le cercle unité dans $\mathbb{R}^{2}$ est un élément de de $A^{n}$ défini co
  $Z_{2} = \{(x,y) \in \mathbb{R} ^{2}, \ x^{3} +  y^{2} = yx^{2} + xy \}  = \{(x,y) \in \mathbb{R} ^{2}, \ x = y\} \cup Z_{1}$  car \ $x^{3} + y^{2} - yx^{2} - xy = (y-x^{2})(y-x) $
 \\ $ Z{3} =\{(x,y,z) \in \mathbb{Q}^{3},\ x^{n} + y^{n} = z^{n}\} $   \ \ \ \ \ ($n\geq 1 $)
 \end{document}
+
+\section{Lemme de Zariski et corollaires}
+
+\underline{Corollaire 1} - 
+Si $k$ est un corps algébriquement clos alors les idéaux maximaux de $k$[$X_{1},...,X_{n}$] sont du type ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) où $a_{1},..., a_{n} \in  k $
+\\
+\underline{Preuve} : Montrons d'abord que  I = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) pour $a_{1},..., a_{n} \in  k $ est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\ On note 
+$ \phi & : & k[X_{1},...,X_{n}] & \to & k $ tel que $\phi(P) =P(a_{1},..., a_{n}) $
+c'est un morphisme surjectif d'anneaux, on prends P dans Ker($\phi$) et on fait la division euclidienne de P par $ X_{1} - a_{1} $ puis du reste par les autres $X_{i} - a_{i}$ pour $ i \geq 2 $ 
+\\
+\\
+\centering 
+$P = (X_{1} - a_{1})Q_{1} + \ ... \ + (X_{n} - a_{n})Q_{n} + P(a_{1},..., a_{n} ) $ avec $Q_{i} \in k[X_{1},...,X_{n}] $
+\\
+\flushleft Or on sait que $\phi( P) = 0$ donc $ P \in I  $ et Ker($\phi$)\ $\subset$ I , car il est clair que I $\subset$ Ker($\phi$), alors I = Ker($\phi$). En quotientant, on obtient que  $k[X_{1},...,X_{n}]/I \simeq k $ et donc I est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\
+\\ Montrons désormais le resultat énoncé, soit I un ideal maximal de $k[X_{1},...,X_{n}]$ alors  $k[X_{1},...,X_{n}]/I$ est une k-algèbre de type fini engendrée par $ \pi(X_{1}),...,\pi(X_{n})$ où $ \pi & : & k[X_{1},...,X_{n}] & \to & k[X_{1},...,X_{n}]/I $ \  la projection canonique donc une extension algébrique finie de k d'après le lemme de Zariski, car k est algébriquement clos on a $k[X_{1},...,X_{n}]/I = k $. Finalement, on peut prendre $a_{1},..., a_{n} \in  k $ tel que $X_{i} - a_{i} \in I\ \ , \ \forall i = {1, ... , n} $. On regarde ce que vaut $X_{i} $ mod$[\ I\ ]$.  \\ Donc $(X_{1} - a_{1}, ... ,  X_{n} - a_{n}) \subset I $ comme ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) est maximal alors I = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$)
