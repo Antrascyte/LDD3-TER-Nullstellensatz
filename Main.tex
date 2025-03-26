@@ -25,8 +25,55 @@
 \usepackage{turnstile}
 \usepackage{dsfont}
 \usepackage{hyperref}
-
+\title{test}
+\author{Felice Hopkins}
+\date{March 2025}
 
 \begin{document}
-    Bonjour monde
+
+\maketitle
+\section{Radical}
+
+Soit $A$ un anneau commutatif.
+
+
+\flushleft\underline{Definition} -Soit $S\subset A $
+\\On appelle radical de $S$ l'ensemble :
+
+\centering $ \sqrt{S}:=\{ a\in A \; | \exists n \in \mathbb{N} \; a^n \in I \} 
+
+
+
+
+\flushleft\underline{Propriété:}Soit $I$ un idéal de $A$. Alors $\sqrt{I}$ est un idéal de $A$ contenant $S$.
+
+\underline{Preuve}:
+
+\item[•] $0 \; \in \sqrt{I}$ car $ 0 \in \ I$
+
+Soient $x$ , $y$ $ \in \sqrt{I}$. Il existe $n$ et $k$ $\in \mathbb{N}$ tels que $x^n \in I$ et $y^k \in I $. 
+\item[•] $(x-y)^{n+k}= \sum_{j=0}^{n+k} \binom{n+k}{j}x^j(-y)^{n+k-j}$. Chacun des termes de la somme est dans $I$ donc $ (x-y)^{n+k} \; \in I$.
+
+\item[•] $(xy)^{nk}=(x^n)^k((y)^k)^n \; \in I$ 
+
+Conclusion: $\sqrt{I}$ est un idéal de $I$.
+
+\vspace{1\baselineskip}
+
+\\ \underline{Definition}: Un idéal radiciel est un idéal d’un anneau qui est son propre radical.
+
+\vspace{1\baselineskip}
+
+\underline{Propriété}:
+
+Le radical d’un idéal d’un anneau est radiciel
+
+\underline{Preuve}:
+
+Soit $I$ un idéal.
+\item[•] , $\sqrt{I} \subset \sqrt{\sqrt{I}} $ est claire
+\item[•]Reciproquement, soit $x \in A $ et $n \in \mathbb{N}$ tel que $x^n \in \sqrt{I} $. Soit maintenant $k \in \mathbb{N} $ tel que $(x^n)^k \in I $. On a donc que $x^{nk} \in I}$, donc $x \in \sqrt{I}$. $\sqrt{\sqrt{I}} \subset \sqrt{I} $
+
+Conclusion: $\sqrt{\sqrt{I}} = \sqrt{I} $
+
 \end{document}
