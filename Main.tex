@@ -30,10 +30,53 @@
 \begin{document}
 
 \maketitle
+
 \center \title{\large \textbf{Algèbre commutative et théorème des zéros de Hilbert}}
 \flushleft
 
+\section{Radical}
 
+Soit $A$ un anneau commutatif.
+
+
+\flushleft\underline{Definition} -Soit $S\subset A $
+\\On appelle radical de $S$ l'ensemble :
+
+\centering $ \sqrt{S}:=\{ a\in A \; | \exists n \in \mathbb{N} \; a^n \in I \} 
+
+
+
+
+\flushleft\underline{Propriété:}Soit $I$ un idéal de $A$. Alors $\sqrt{I}$ est un idéal de $A$ contenant $S$.
+
+\underline{Preuve}:
+
+\item[•] $0 \; \in \sqrt{I}$ car $ 0 \in \ I$
+
+Soient $x$ , $y$ $ \in \sqrt{I}$. Il existe $n$ et $k$ $\in \mathbb{N}$ tels que $x^n \in I$ et $y^k \in I $. 
+\item[•] $(x-y)^{n+k}= \sum_{j=0}^{n+k} \binom{n+k}{j}x^j(-y)^{n+k-j}$. Chacun des termes de la somme est dans $I$ donc $ (x-y)^{n+k} \; \in I$.
+
+\item[•] $(xy)^{nk}=(x^n)^k((y)^k)^n \; \in I$ 
+
+Conclusion: $\sqrt{I}$ est un idéal de $I$.
+
+\vspace{1\baselineskip}
+
+\\ \underline{Definition}: Un idéal radiciel est un idéal d’un anneau qui est son propre radical.
+
+\vspace{1\baselineskip}
+
+\underline{Propriété}:
+
+Le radical d’un idéal d’un anneau est radiciel
+
+\underline{Preuve}:
+
+Soit $I$ un idéal.
+\item[•] , $\sqrt{I} \subset \sqrt{\sqrt{I}} $ est claire
+\item[•]Reciproquement, soit $x \in A $ et $n \in \mathbb{N}$ tel que $x^n \in \sqrt{I} $. Soit maintenant $k \in \mathbb{N} $ tel que $(x^n)^k \in I $. On a donc que $x^{nk} \in I}$, donc $x \in \sqrt{I}$. $\sqrt{\sqrt{I}} \subset \sqrt{I} $
+
+Conclusion: $\sqrt{\sqrt{I}} = \sqrt{I} $
 
 
 \section{Eléments entiers}
@@ -121,8 +164,6 @@ Le cercle unité dans $\mathbb{R}^{2}$ est un élément de de $A^{n}$ défini co
  $Z_{1}=\{(x,y) \in \mathbb{R}^{2},\ y = x^{2}  \}$\\
  $Z_{2} = \{(x,y) \in \mathbb{R} ^{2}, \ x^{3} +  y^{2} = yx^{2} + xy \}  = \{(x,y) \in \mathbb{R} ^{2}, \ x = y\} \cup Z_{1}$  car \ $x^{3} + y^{2} - yx^{2} - xy = (y-x^{2})(y-x) $
 \\ $ Z{3} =\{(x,y,z) \in \mathbb{Q}^{3},\ x^{n} + y^{n} = z^{n}\} $   \ \ \ \ \ ($n\geq 1 $)
-\end{document}
-\\
 
 \underline{Définitions} 
 \\
@@ -151,7 +192,8 @@ $P = (X_{1} - a_{1})Q_{1} + \ ... \ + (X_{n} - a_{n})Q_{n} + P(a_{1},..., a_{n} 
 \flushleft Or on sait que $\phi( P) = 0$ donc $ P \in I  $ et Ker($\phi$)\ $\subset$ I , car il est clair que I $\subset$ Ker($\phi$), alors I = Ker($\phi$). En quotientant, on obtient que  $k[X_{1},...,X_{n}]/I \simeq k $ et donc I est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
 \\
 \\ Montrons désormais le resultat énoncé, soit I un ideal maximal de $k[X_{1},...,X_{n}]$ alors  $k[X_{1},...,X_{n}]/I$ est une k-algèbre de type fini engendrée par $ \pi(X_{1}),...,\pi(X_{n})$ où $ \pi & : & k[X_{1},...,X_{n}] & \to & k[X_{1},...,X_{n}]/I $ \  la projection canonique donc une extension algébrique finie de k d'après le lemme de Zariski, car k est algébriquement clos on a $k[X_{1},...,X_{n}]/I = k $. Finalement, on peut prendre $a_{1},..., a_{n} \in  k $ tel que $X_{i} - a_{i} \in I\ \ , \ \forall i = {1, ... , n} $. On regarde ce que vaut $X_{i} $ mod$[\ I\ ]$.  \\ Donc $(X_{1} - a_{1}, ... ,  X_{n} - a_{n}) \subset I $ comme ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) est maximal alors I = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$)
-\\
+
+
 \underline{Corollaire 2} - \\
 Soit $k$ un corps algébriquemnt clos et I un idéal de $k[X_{1},...,X_{n}] $  qui n'est pas (1) alors V(I) $\neq \emptyset$.
 
@@ -178,3 +220,5 @@ $\sum_{j = 1}^m P_{j}Q_{j} \ + (1- TP)Q_{0} = 1$
 \flushleft Cela implique que $P^{r} \in (P_{1},..., P_{m}) = J$ et finalement $P \in \sqrt{J}$.
 
 Donc $I(V(J)) = \sqrt{J}$
+
+\end{document}
