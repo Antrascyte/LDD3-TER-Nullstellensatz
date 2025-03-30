@@ -174,6 +174,26 @@ Si R est une partie de $A^{n}$, on définit \textit{l'idéal de R} :
 \center
 I(R) =$\left\{  P \in k[X_{1},...,X_{n}], \  \forall(x_{1}, ... , x_{n}) \in R \ P(x_{1}, ... , x_{n}) = 0  \right\}$
 
+\underline{Propositions} - Soit S,S' des parties de $k$[$X_{1},...,X_{n}$] et Z,Z' des parties de $A^{n}$. Alors :
+
+ (1) Si $S \subset  S' $ alors $V(S') \subset V(S) $
+\\(2) Si $I = (S)$ alors $V(I) =V(S) $
+\\(3) $S \subset I(V(S))$
+\\ (4) Si $Z \subset Z'$ alors $I(Z') \subset I(Z)$
+\\ (5) $I(Z)$ est un idéal de $k[X_{1},...,X_{n}]$
+\\ (6) $I(Z \ \cup \ Z') = I(Z)\ \cap \ I(Z')$
+\\ (7) $Z\subset V(I(Z)) $ avec égalité si et seulement si $Z$ est un ensemble algébrique
+
+\underline{Preuve} - \\ (1), (4) et (6) proviennent des défintions, pareil pour (3) et pour la première partie de (7).
+\\ Montrons (5), soit $P_{1},P_{2} \in I(Z)$ alors sur $Z$ car $P_{1}$ et $P_{2}$ s'annulent donc $P_{1} + P_{2}, \lambda P_{1}$ aussi pour $\lambda \in k$ et donc $\forall Q \in k[X_{1},...,X_{n}], \ P_{1}Q$ s'annule également sur Z alors $I(Z)$ est bien un idéal de $k[X_{1},...,X_{n}]$.
+\\ Montons (2), par (1) on $V(I) \subset V(S)$. Soit $P \in I$ alors il existe $ Q_{i} \in S $ et $R_{i} \in k[X_{1},...,X_{n}]$ tel que $P = \sum_{i} P_{i}Q_{i} $. Donc en prenant $ x \in V(S)$, on a $Q_{i}(x) = 0 \  \ \forall i$ donc $ P(x) = 0$, ce qui implique $V(S) \subset V(I)$. D'ou l'égalité.
+\\ Montrons la deuxième partie de (7), on suppose que $Z = V(I(Z))$ alors $Z$ est un ensemble algébrique. Si $Z$ est un ensemble algébrique, alors il existe $S \in k[X_{1},...,X_{n}]$ tel que $Z =V(S)$, par définition $S \subset I(Z)$ et par (1) $V(I(Z)) \subset V(S)$ ce qui donne l'inclusion réciproque.
+
+\underline{Corollaire} - Les applications $I$ et $V$ sont des bijections réciproques entre les ensembles algébriques de $ A^{n}$ et les idéaux de $k[X_{1},...,X_{n}]$ de la forme $I(Z)$
+
+\underline{Preuve} - Provient entièrement de la proposition (7). 
+
+
 \flushleft
 \section{Lemme de Zariski et corollaires}
 
