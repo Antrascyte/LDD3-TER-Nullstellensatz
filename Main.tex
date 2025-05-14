@@ -90,6 +90,29 @@ Soit  A  et B deux anneaux commutatifs unitaires et $ f & : & A & \to & B $ un m
 \flushleft On appelle cette éqauation une \textit{relation de dépendance intégrale}
 
 \underline{Propriété} -
+Soit $A$ un sous-anneau de $B$ et $B$ intègre. Soit $\beta \in B$. Les assertions suivantes sont équivalentes :
+
+(a) $\exists P \in A[X]$ unitaire tel que $P(\beta) = 0$
+
+(b) $A[\beta]$ est un $A$-module de type fini
+
+(c) il existe un $A[\beta]$-module $M$ tel que :
+\\(i) $A[\beta] \subset M$
+\\ (ii)$M$ est un $A$-module de type fini
+
+(d) il existe $F$ $A[\beta]$-module fidèle en temps que $A[\beta]$-module et de type fini comme $A$-module
+
+\underline{Démonstration} - (d), (c) $\implies$ (a)  
+\\ E un $A[\beta]$-module de type fini sur A. $E =<e_{1} ,...,e_{d}>$. Alors  $ \exists (b_{i,j}) \in A$ tel que $\forall j, \beta e_{j} = \sum_{i=1}^{d} b_{i,j}e_{i} $. On note $B = (b_{i,j})$ la matrice et $L =A[\beta]^{d}$ $ A[\beta]$-module libre et $(l_{i})$ sa base canonique et $ \pi & : & L & \to & E $ un $A[\beta]$ mophisme tel que $\pi(l_{i}) =e_{i} $. Soit $M$matrice à coefficients dans $A[\beta]$ définie par $M =\beta I_{d} -B $. M donne un endomorphisme $\gamma & : & L & \to & L $.  $\pi \circ\gamma = 0 $. On note $M' = Com(M)^{t} $ et soit $\gamma'$ l'endomorphisme associé. $\gamma \circ \gamma' (x) =\delta x$ où $\delta = det(M)$.
+
+Par surjectivité de $ \pi $ on a que $\forall x \in E \ \exists y \in L $ tel que $x =\pi(y)$ donc $\delta x = \delta\pi(y) = \pi(\delta y) = \pi(\gamma \circ \gamma' (y)) =0$ donc $\delta E = 0$. \\ Dans le cas (c), $1\in E $ donc $  \delta.1 = 0 \implies \delta = 0$. \\ Pour (d), car E est fidèle on a directement que $\delta \in Ann(E) =\{0\}$ donc $\delta = 0$. Or $\delta = det(\beta I_{d} - B)$ c'est un polynome unitaire en $\beta$ à coefficients dans $A$.
+
+(a) $\implies (b)$ car si on note $d = deg(P)$ alors $A[\beta]$ est engendré par $1,\beta,...,\beta^{d-1}$ come $A$-module.
+
+Pour les autres implications, il suffit de bien choisir les $A[\beta]$ module parmis ceux dont on dipose grâce aux hypothèses.
+
+
+\underline{Propriété} -
 Soit $x \in$ B  entier sur A si et seulement si il existe  R sous-anneau de B qui contient A[$x$] et qui soit de type fini comme A-module.
 
 \underline{Démonstration} -
