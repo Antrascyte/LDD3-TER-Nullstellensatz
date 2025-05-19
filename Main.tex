@@ -264,4 +264,56 @@ $\sum_{j = 1}^m P_{j}Q_{j} \ + (1- TP)Q_{0} = 1$
 
 Donc $I(V(J)) = \sqrt{J}$
 
+\section{Topologie de Zariski sur $k^{n$}}
+
+\underline{Définition} - Les fermés de la topologie de Zariski sont les $V(I)$ où $I$ est un idéal de $k[X_{1},...,X_{n}]$ ( les ensembles algébriques de $A^{n}$)
+
+\underline{Proposition} - 
+On a que $ \cap \ V(I_{k}) = V(\sum I_{k}) $ et $V(I_1 ) \cup V( I_2) = V(I_1 \cap I_2) = V(I_1 I_2) $
+
+\underline{Proposition} - Si Z est une partie de $A^{n}$ alors $V(I(Z)) $ est l'adhérende de Z dans $A^n$ pour la topologie de Zariski.
+
+\underline{Démonstration} - 
+
+Si $J$ est un idéal de $k[X_1, . . . , X_n]$, on a $Z \subset V (J)$ si et
+seulement si pour tout $ P \in J$ et tout $x \in Z$, $P(x) = 0$, autrement dit, si
+et seulement si pour tout $P \in I$, $P \in I(Z)$, c’est-à-dire $J \subset I (Z)$.
+
+\underline{Proposition} - La topologie de Zariski sur $A^n$ est noethérienne. Autrement dit toute intersection décroissante  de fermé de $A^n$ est stationnaire.
+
+
+
+\textbf{Remarque} -  Soit T une topologie. On a clairement équivalence entre :
+\item[•] T est noethérienne ;
+\item[•] toute suite croissante d'ouverts stationne ;
+\item[•] toute famille non vide d'ouverts admet un élément maximal ;\item[•] toute suite décroissante de fermés stationne ;\item[•]toute famille non vide de fermés admet un élément minimal.
+
+\underline{Démonstration} - 
+\\ Soit $(F_\omega) $ une famille décroissante de fermés de $A^n$ alors la famille $I(F_\omega)$ d'idéaux de $k[X_{1},...,X_{n}]$ est non vide donc admet un élément maximum $I(F_{\omega_{0}})$ car $k[X_{1},...,X_{n}]$ est noethérien. Donc $\forall \omega $ on a , $V(I(F_{\omega_{0}})) \subest V(I(F_\omega))$ donc $F_{\omega_{0}} \subset F_{\omega}$ donc la famille $(F_\omega) $ admet un élément minimal.
+
+\underline{Définition} - On dit qu'une partie non vide $Z$ de $A^n$ est irréductible si pour touts $Z_1, Z_2$ fermés de $A^n$ tel que $Z \subset Z_1 \cup Z_2$ alors $Z\subset Z_1$ ou $Z \subset Z_2$.
+
+\underline{Proposition} - Un ensemble algébrique $Z$ est irréductible si et seulement si son idéal $I(Z)$ est premier dans $k[X_{1},...,X_{n}]$.
+
+\underline{Démonstration} - \\ Supposons que $Z$ est irreductible. $Z$ est non de donc 1 ne s'annule pas sur $Z$ et $I(Z) \neq k[X_{1},...,X_{n}]$. soit $f,g \in k[X_{1},...,X_{n}]$ tel que $fg \in I(Z)$ alors $Z \subset V(fg) = V(f) \cup V(g) $. Quitte à échanger, on peut supposer que $Z \subset V(f)$ donc $f \in I(Z)$ et $I(Z)$ est premier.
+
+Supposons que $I(Z)$ est un idéal premier. On va montrer un petit lemme. \\
+\underline{Lemme d'évitement} - Soit A un anneau, si $I,J$ et $p$ idéaux de $ A$. Si $p$ est premier et $IJ\subset p$ alors $I \subset p$ ou $J\subset p$.
+\\ \underline{Preuve} - \\ Si $ I \not\subset p$ alors il existe $x \in I$ tel que $x \not\in p$ pareil si $J \not\subset p$, il existe $y\in J$ et $y \not\in p$. Alors $xy \in IJ $ or p premier $xy \not\in p$. D'où $IJ \not\subset p$.
+\\ Donc si $Z = Z_1 \cup Z_2$ alors $I(Z) = I(Z_1) \cap I(Z_2) $ alors par le lemme d'évitement $I(Z)= I(Z_1)$ ou $I(Z)= I(Z_2)$. Donc $Z= Z_1$ ou $Z = Z_2$.
+
+
+
+On va donner ici quelques définitions permettant d'énoncer une propriété importante sur les points fermés pour la topologie de Zariski
+
+\underline{Définition} - Soit A un anneau, on appelle le spectre de $A$, $Spec(A) = \{ I \subset A | \ I $ idéal premier$ \}$.
+
+\underline{Défintion} - Soit A un anneau et $f \in A$, on définit $D(f) = Spec(A[\frac{1}{f}])$
+
+\textbf{Remarque } $D(f)$ est en bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$
+
+\underline{Proposition} - Soit $k$ un corps et A un $k$- algèbre de type fini alors l'ensemble des points fermés de $Spec(A)$ est dense dans $Spec(A)$.
+
+\underline{Démonstration} - \\ Donc $D(f)$ est bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$ par la remarque au dessus. $A[\frac{1}{f}]$ est une $k$- algèbre de type fini car $A$ l'est. Donc par le morphisme naturel  $ A & \to & A[\frac{1}{f}] $, les images réciproques d'idéaux premiers de $A[\frac{1}{f}]$ sont premiers dans $A$. Tout $D(f)$ contient au moins un idéal premier, donc $Spec(A)$ également.
+
 \end{document}
