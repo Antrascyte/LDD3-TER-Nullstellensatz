@@ -1,4 +1,4 @@
-documentclass[a4paper,10pt]{article}
+\documentclass[a4paper,10pt]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
@@ -178,6 +178,7 @@ I(R) =$\left\{  P \in k[X_{1},...,X_{n}], \  \forall(x_{1}, ... , x_{n}) \in R \
 
 \flushleft
 \section{Radical}
+
 Soit $A$ un anneau commutatif.
 
 
@@ -219,6 +220,25 @@ Soit $I$ un idéal.
 \item[•]Reciproquement, soit $x \in A $ et $n \in \mathbb{N}$ tel que $x^n \in \sqrt{I} $. Soit maintenant $k \in \mathbb{N} $ tel que $(x^n)^k \in I $. On a donc que $x^{nk} \in I}$, donc $x \in \sqrt{I}$. $\sqrt{\sqrt{I}} \subset \sqrt{I} $
 
 Conclusion: $\sqrt{\sqrt{I}} = \sqrt{I} $
+
+
+\subsection{Nilradical}
+\underline{Définition:} On appelle nilradical l'ensemble \centering $ Nil(A):=\{ a\in A \; | \exists n \in \mathbb{N} \; a^n =0 \}$ l'ensemble des éléments nilpotents de A. C'est l'idéal $\sqrt(\{0\})$.
+\\
+\underline{Propsition:} Nil(A) est l'intersection de tous les idéaux premiers de A.
+\\
+\underline{Preuve:}
+Soit $p$ un idéal premier de A, x nilpotent et m tel que $x^m$ = 0. $x^m=0 \in p$ . Comme $p$ est premier, x $\in$  p.
+\\
+Réciproquement, montrons que si s n'est pas nilpotent, alors il existe un idéal premier auquel s n'appartient pas. On note E l'ensemble des idéaux de A qui ne contiennent aucune puissance de s. E est non vide car il contient (0) car s n'est pas nilpotent. L'inclusion munit de E un ordre inductif. D'après le lemme de Zorn, E a un élément maximal P. P est strictement inclus dans A. Montrons que P est premier: soient x et y des éléments de A qui n'appartiennent pas à P.
+Comme x n'est pas dans P, $ P \subsetneq Ax+P $. Comme P est maximal dans E, Ax+P n'est pas un élément de E et contient donc une puissance de s. Il existe $p \in P$, $k \in \mathbb{N}$^, $a \in A$ tel que $s^k=p+ax$. De même, $q \in P$, $l \in \mathbb{N}$^, $b \in A$ tel que $s^l=q+by$.
+$ s^{k+l} = (p+ax)(q+by) = pq + (ax)q + (by)p + (ab)(xy)$ donc $(ab)(xy) \not\in P$ et $xy \not\in P$. P est donc premier. D'où le résultat.
+
+
+\vspace{1\baselineskip}
+\\ 
+\underline{Corollaire:} Si I est un idéal de A, alors $\sqrt(I)$ = $\bigcap_{p  \ premier \ I \subset p}^{} p $
+
 
 
 \flushleft
@@ -298,5 +318,114 @@ Si $k$ est un corps algébriquement clos alors les idéaux maximaux de $k$[$X_{1
 \underline{Preuve} : On a déjà vu que  $I$ = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) pour $a_{1},..., a_{n} \in  k $ est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
 \\ Montrons désormais le resultat énoncé, soit $I$ un ideal maximal de $k[X_{1},...,X_{n}]$ alors  $k[X_{1},...,X_{n}]/I$ est une k-algèbre de type fini engendrée par $ \pi(X_{1}),...,\pi(X_{n})$ où $ \pi & : & k[X_{1},...,X_{n}] & \to & k[X_{1},...,X_{n}]/I $ \  la projection canonique donc une extension algébrique finie de k d'après le lemme de Zariski, car k est algébriquement clos on a $k[X_{1},...,X_{n}]/I = k $. Finalement, on peut prendre $a_{1},..., a_{n} \in  k $ tel que $X_{i} - a_{i} \in I\ \ , \ \forall i = {1, ... , n} $. On regarde ce que vaut $X_{i} $ mod$[\ I\ ]$.  \\ Donc $(X_{1} - a_{1}, ... ,  X_{n} - a_{n}) \subset I $ comme ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) est maximal alors $I$ = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$)
 
+\section{Topologie de Zariski sur $k^{n$}}
+
+\underline{Définition} - Les fermés de la topologie de Zariski sont les $V(I)$ où $I$ est un idéal de $k[X_{1},...,X_{n}]$ ( les ensembles algébriques de $A^{n}$)
+
+\underline{Proposition} - 
+On a que $ \cap \ V(I_{k}) = V(\sum I_{k}) $ et $V(I_1 ) \cup V( I_2) = V(I_1 \cap I_2) = V(I_1 I_2) $
+
+\underline{Proposition} - Si Z est une partie de $A^{n}$ alors $V(I(Z)) $ est l'adhérende de Z dans $A^n$ pour la topologie de Zariski.
+
+\underline{Démonstration} - 
+
+Si $J$ est un idéal de $k[X_1, . . . , X_n]$, on a $Z \subset V (J)$ si et
+seulement si pour tout $ P \in J$ et tout $x \in Z$, $P(x) = 0$, autrement dit, si
+et seulement si pour tout $P \in I$, $P \in I(Z)$, c’est-à-dire $J \subset I (Z)$.
+
+\underline{Proposition} - La topologie de Zariski sur $A^n$ est noethérienne. Autrement dit toute intersection décroissante  de fermé de $A^n$ est stationnaire.
+
+
+
+\textbf{Remarque} -  Soit T une topologie. On a clairement équivalence entre :
+\item[•] T est noethérienne ;
+\item[•] toute suite croissante d'ouverts stationne ;
+\item[•] toute famille non vide d'ouverts admet un élément maximal ;\item[•] toute suite décroissante de fermés stationne ;\item[•]toute famille non vide de fermés admet un élément minimal.
+
+\underline{Démonstration} - 
+\\ Soit $(F_\omega) $ une famille décroissante de fermés de $A^n$ alors la famille $I(F_\omega)$ d'idéaux de $k[X_{1},...,X_{n}]$ est non vide donc admet un élément maximum $I(F_{\omega_{0}})$ car $k[X_{1},...,X_{n}]$ est noethérien. Donc $\forall \omega $ on a , $V(I(F_{\omega_{0}})) \subest V(I(F_\omega))$ donc $F_{\omega_{0}} \subset F_{\omega}$ donc la famille $(F_\omega) $ admet un élément minimal.
+
+\underline{Définition} - On dit qu'une partie non vide $Z$ de $A^n$ est irréductible si pour touts $Z_1, Z_2$ fermés de $A^n$ tel que $Z \subset Z_1 \cup Z_2$ alors $Z\subset Z_1$ ou $Z \subset Z_2$.
+
+\underline{Proposition} - Un ensemble algébrique $Z$ est irréductible si et seulement si son idéal $I(Z)$ est premier dans $k[X_{1},...,X_{n}]$.
+
+\underline{Démonstration} - \\ Supposons que $Z$ est irreductible. $Z$ est non de donc 1 ne s'annule pas sur $Z$ et $I(Z) \neq k[X_{1},...,X_{n}]$. soit $f,g \in k[X_{1},...,X_{n}]$ tel que $fg \in I(Z)$ alors $Z \subset V(fg) = V(f) \cup V(g) $. Quitte à échanger, on peut supposer que $Z \subset V(f)$ donc $f \in I(Z)$ et $I(Z)$ est premier.
+
+Supposons que $I(Z)$ est un idéal premier. On va montrer un petit lemme. \\
+\underline{Lemme d'évitement} - Soit A un anneau, si $I,J$ et $p$ idéaux de $ A$. Si $p$ est premier et $IJ\subset p$ alors $I \subset p$ ou $J\subset p$.
+\\ \underline{Preuve} - \\ Si $ I \not\subset p$ alors il existe $x \in I$ tel que $x \not\in p$ pareil si $J \not\subset p$, il existe $y\in J$ et $y \not\in p$. Alors $xy \in IJ $ or p premier $xy \not\in p$. D'où $IJ \not\subset p$.
+\\ Donc si $Z = Z_1 \cup Z_2$ alors $I(Z) = I(Z_1) \cap I(Z_2) $ alors par le lemme d'évitement $I(Z)= I(Z_1)$ ou $I(Z)= I(Z_2)$. Donc $Z= Z_1$ ou $Z = Z_2$.
+
+
+
+On va donner ici quelques définitions permettant d'énoncer une propriété importante sur les points fermés pour la topologie de Zariski
+
+\underline{Définition} - Soit A un anneau, on appelle le spectre de $A$, $Spec(A) = \{ I \subset A | \ I $ idéal premier$ \}$.
+
+\underline{Défintion} - Soit A un anneau et $f \in A$, on définit $D(f) = Spec(A[\frac{1}{f}])$
+
+\textbf{Remarque } $D(f)$ est en bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$
+
+\underline{Proposition} - Soit $k$ un corps et A un $k$- algèbre de type fini alors l'ensemble des points fermés de $Spec(A)$ est dense dans $Spec(A)$.
+
+\underline{Démonstration} - \\ Donc $D(f)$ est bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$ par la remarque au dessus. D'où les $D(f)$ pour $f \in A$ forment une base  de la topologie de Zariski. $A[\frac{1}{f}]$ est une $k$- algèbre de type fini car $A$ l'est. Donc par le morphisme naturel  $ A & \to & A[\frac{1}{f}] $, les images réciproques d'idéaux premiers de $A[\frac{1}{f}]$ sont premiers dans $A$. Tout $D(f)$ contient au moins un idéal premier, donc $Spec(A)$ également. Donc tous les ouverts d'une base de la topologie de Zariski contient au moins un point fermé de $Spec(A)$.
+
+
+\section{Anneau de Jacobson}
+\\ Soit A un anneau commutatif. On dit que A est Jacobson si tout idéal premier de A est intersection d'idéaux maximaux de A.
+\\
+\underline{Exemple:} \mathbb{Z} est de Jacobson puisque ses idéaux premiers sont les p\mathbb{Z} pour $p$ premier, qui sont exactement les idéaux maximaux de \mathbb{Z}.
+\\
+\underline{Théorème: généralisation du Nullstellensatz }Si $R$ est un anneau de Jacobson, et $S$ une $R$-algèbre de type fini, alors $S$ est un anneau de Jacobson. De plus, si $n$ est un idéal maximal de S, alors $$n \cap R$$ est un idéal maximal de R et $S/n$ est une extension algébrique finie de $R/m$.
+
+\\
+\underline{Théorème:}
+Soit R un anneau commutatif.
+\\
+
+Les propositions suivantes sont équivalentes:
+\\ a) R est un anneau de Jacobson 
+\\ b) Si $p\subset R$ est un idéal premier et $S= R/p$ contient b non nul tel que $S[1/b]$ est
+un corps, alors $S$ est un corps.
+\\
+\underline{Démonstration:}
+\\
+\item[•] $ a) \Rightarrow b) $ Montrons que $(0)$ est un idéal maximal de $S$. Supposons a) et l’hypothèse de b). Comme R est de Jacobson, S l’est aussi donc l’intersection de tous ses idéaux maximaux est incluse dans l’intersection de ses idéaux premiers, qui est son
+nilradical. Or $S$ est intègre car $p$ est premier donc $\bigcap_{m  \ maximal }^{} m $ = $(0)$. Maintenant, les idéaux premiers de S[1/b] correspondant bijectivement aux idéaux premiers de S ne contenant pas b, et S[1/b] étant un corps, on sait qu’il n’y a qu’un seul
+idéal de S ne contenant pas b, c’est (0). Ainsi, (0) apparaît dans $\bigcap_{m  \ maximal }^{} m $ , sinon cette intersection contiendrait b. $(0)$ est maximal donc $S$ est un corps.
+\\
+\item[•] $ b) \Rightarrow a) $ On suppose b). Soit $Q$ un idéal premier de R. Montrons que $Q= $$\bigcap_{m  \ maximal, \ Q \subset m }^{} m $. Supposons l'inclusion stricte et prenons un élément f dans le membre de droite qui n'est pas dans celui de gauche. Par le lemme de Zorn, il existe un idéal premier p maximal parmi les idéaux premiers $I$ de $R$ vérifiant  $Q \subset I \subsetneq (Q,f)$. $p$ n'est pas maximal car $ I \subsetneq (Q,f) \subset $ $\bigcap_{m  \ maximal, \ Q \subset m }^{} m $, qui est un idéal strict de $R$. Donc $R/p$ n'est pas un corps. Mais $p$ engendre dans $R[1/f]$ un idéal maximal $(p[1/f])$ maximal donc $(R/p)[1/f]$ = $R[1/f]/p[1/f] $ est un corps et donc $R/p$ est un corps.
+
+\vspace{1\baselineskip}
+
+\\
+\subsection{Lien avec la topologie de Zariski}
+
+\\
+Soit A un anneau commutatif. k un corps algebriquement clos.
+\\ 
+On a déjà défini la topologie de Zariski sur $k^n$, en déclarant fermés les ensembles algebriques de $k^n$.
+Soit I un idéal de $k[X_{1},...,X_{n}]$, d'après la forme forte du Nullstellensatz, $I((V(I)) = \sqrt{I}$. Comme, $\sqrt{I}$ = .$\bigcap_{p  \ premier \ I \subset p}^{} p $, et que $V(I)= V(\sqrt(I))$, on peut définir une topolgie (qu'on appelle toujours topologie de Zariski) sur Spec($k[X_{1},...,X_{n}]$) en définisant les fermés comme étant V(I)= $ \{ p \ idéal \ premier \; | $I \subset p$ \}.
+
+\\ 
+On peut de même définir une topologie sur Spec A pour A un anneau en définissant les fermés: V(I)= $ \{ p \ idéal \ premier \; | $I \subset p$ \} pour I idéal de A. Un point de spec A  est dit fermé si le singleton correspondant est un fermé de spec A (ce qui équivaut, par le théorème de Krull, à être un
+idéal maximal).
+
+
+\\
+
+\underline{Proposition:}
+Les assertions suivantes sont équivalentes:
+\\ a) A est un anneau de Jacobson
+\\ b) Pour toute partie fermée non-vide V(I) $\subset$ spec A, l’ensemble des points fermés est dense dans V(I).
+
+\underline{Preuve:}
+\\ 
+\item[•] $ a) \Rightarrow b) $ soit un fermé V(I). On veut montrer que tout ouvert de tout $p \in V(I)$ rencontre $ \{I \subset m \ | \ m \ maximal \} $. Soit donc p ∈ V(I) et $\SpecA  \backslash Z(J) $ un ouvert de p . Ainsi $p \notin Z(J)$ donc p ne contient pas J. On veut donc trouver un idéal maximal de A qui contient I mais pas J. Comme A est de Jacobson, p est intersection d’idéaux maximaux le contenant : or un des idéaux de l’intersection doit ne pas contenir J, sinon p
+le contiendrait. 
+\\
+\item[•] $ b) \Rightarrow a) $ On suppose b). D'après la preuve de l'implication précédente, pour un idéal de A et p $\in V(I)$, alors pour tout $J \not\subset V(I) $, il existe $m$ maximal tel que $J \not\subset m$ et $I \subset m$.Soit p un idéal premier de A. Montrons que p = $\bigcap_{m  \ maximal \ p \subset m}^{} m $. L'inclusion directe est claire. Montrons l'inclusion réciproque. On prend $I \leftarrow p$, $J  \leftarrow$ $\bigcap_{m  \ maximal \ p \subset m}^{} m $, qui donne l'existence d'un iéal maximal m' tel que  $p \subset m'$ et $\bigcap_{m  \ maximal \ p \subset m}^{} m $ $\not\subset$ $m'$, ce qui est absurde. D'où le résultat.
+
+\end{document}
 
 \end{document}
