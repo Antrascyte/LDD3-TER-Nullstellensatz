@@ -1,6 +1,7 @@
 \documentclass[a4paper,10pt]{article}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{microtype}
 \usepackage{amsmath,amsthm,amsfonts,amssymb}
@@ -18,6 +19,7 @@
 \usepackage{mathtools}
 \usepackage{esint}
 \usepackage{stmaryrd}
+\usepackage{parskip}
 \usepackage{minted}
 \usepackage[european resistor, european voltage, european current]{circuitikz}
 \usepackage{bussproofs}
@@ -26,13 +28,825 @@
 \usepackage{dsfont}
 \usepackage{hyperref}
 
-\title{Nullstellensatz et variétés algébriques}
-\author{Robinson Richard, Felice Hopkins, Yael Rougon}
-\date{Mars 2025}
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{biblio.bib}
+
+\frenchsetup{StandardItemLabels=true}
+
+\setminted[python]{breaklines, framesep=2mm, numbersep=5pt}
+\setlength{\parskip}{2ex}
+\setlength{\parindent}{3em}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Théorème}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Définition}
+
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollaire}[theorem]
+
+\theoremstyle{plain}
+\newtheorem{lemma}[theorem]{Lemme}
+
+\theoremstyle{definition}
+\newtheorem*{example}{Exemples}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remarque}
+
+\title{Le théorème des zéros de Hilbert}
+\author{
+  Robinson RICHARD
+  \and
+  Felice HOPKINS
+  \and
+  Yael ROUGON
+}
+
 
 \begin{document}
 \maketitle
 
-Bonjour monde!
+\section*{Préambule}
+Le présent document a été rédigé par trois étudiants de première année de Magistère de Mathématiques à l'institut de Mathématiques d'Orsay, et constitue leur rapport de \textit{travail encadré de recherche}. Celui-ci, sur le thème du \textit{nullstellensatz} ou \textit{théorème des zéros de Hilbert}, fut encadré par M. Pierre LORENZON, dont \href{https://www.imo.universite-paris-saclay.fr/~pierre.lorenzon/}{voici la page web}.\\
+Les ressources principales utilisées dans l'élaboration de ce texte, et qui permettront au lecteur curieux d'approfondir son étude des sujets abordés, sont \cite{chambert-loirAccelereAlgComm}, \cite{AtiyahMacdonald}, \cite{Eisenbud} et \cite{Berhuy}.
+
+
+\section*{Remerciements}
+En premier lieu, nous souhaitons adresser nos profonds remerciements à M. Pierre Lorenzon qui, en sa qualité d'encadrant de TER, a su nous guider dans le domaine vaste de l'algèbre commutative où l'on est prompt à se perdre, en nous indiquant des ressources diverses et complètes, des points à approfondir, et en nous fournissant conseils et explications lors d'échanges réguliers qui nous ont permis de comprendre notre sujet, d'écrire ce rapport et nous ont offert une ouverture vers de magnifiques mathématiques.\\
+Dans une moindre mesure, nous tenons à remercier Mme Maria Paula GOMEZ-APARICIO et toute l'équipe pédagogique qui nous a permis de réaliser ce travail encadré de recherche, une aventure particulièrement enrichissante en terre mathématique au-delà de nos cours.
+
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
+
+L'algèbre, de l'arabe \textit{al-jabr} signifiant "réduction d'une fracture" ou "reconstruction" a toujours eu pour sujet central d'études les polynômes et les équations y faisant appel. La géométrie, du grec \textit{geômétrês} signifiant "géomètre/arpenteur" venant de \textit{gê}, "terre", et \textit{métron}, "mesure", s'est quant à elle d'abord concentrée sur les figures du plan et de l'espaces, êtres "spatiaux" constitués de points. Déjà, dans un traité ayant donné son nom à l'algèbre, le mathématicien du neuvième siècle Al-Khawarizmi utilisait des méthodes géométriques pour résoudre des équations quadratiques, en faisant appel à des figures représentant une équation donnée. En outre, depuis que la géométrie analytique a vu le jour suite aux travaux de Descartes, le pont entre l'algèbre et la géométrie s'est agrandi, les objets géométrique d'intérêt du plan ou de l'espace pouvant depuis lors être représentés par des équations ou inéquations polynomiales une fois un système de coordonnées fixé. Les développements mathématiques subséquents, dont l'introduction des fonctions abstraites, ont permis de considérer les zéros de fonctions de plus en plus générales, jusqu'à en arriver aux sous-variétés de $\mathbb{R}^n$ pour $n \in \mathbb{N}$ d'une certaine régularité, qui sont localement des zéros de fonctions de cette même régularité. C'est une idée géométrique générale riche permettant de relier géométrie et autres branches des mathématiques. Pourtant, les polynômes ont toujours des choses à nous dire. Dans le cas des polynômes à une variable sur un corps algébriquement clos, nous savons qu'ils ont toujours une racine dès lors que leur degré est strictement positif (c'est d'ailleurs l'intérêt premier des corps algébriquement clos), et nous savons également qu'il n'existe pas d'expression algébrique finie à partir des opérations arithmétiques élémentaires et des radicaux donnant une formule générale pour les racines de polynômes de degré supérieur ou égal à cinq, grâce aux travaux de Ruffini, Abel et Galois. Mais qu'en est-il des familles de polynômes, notamment à plusieurs variables ? Ont-elles toujours une racine commune ? Le Nullstellensatz nous offre une réponse à ces questions.
+
+L'un des premiers objets offrant un support intuitif à la géométrie algébrique est celui d'\textit{ensemble algébrique} de $k^n$, avec $k$ un corps et $n$ un entier naturel non nul, qui correspond à l'ensemble des solutions d'un système d'équations polynomiales sur $k$ à $n$ variables. Remarquons que si deux polynômes à coefficients dans $k$ et à $n$ variables s'annulent sur un ensemble de points de $k^n$, leur somme et leur différence s'y annule également, tout comme leur produit avec n'importe quel autre polynôme à $n$ variables et à coefficients dans le même corps. Ainsi, l'ensemble des polynômes s'annulant sur un ensemble algébrique de $k^n$ forme un idéal de l'anneau des polynômes en $n$ variables sur $k$. Dès lors, une question naturelle est la suivante : peut-on identifier idéaux de l'anneau de polynômes sur un corps $k$ en $n \in \mathbb{N}^*$ variables et les ensembles algébriques de $k^n$ ? Deux obstructions semblent apparaître en premier lieu : déjà, le corps considéré doit être algébriquement clos pour que tout polynôme ait une racine; autrement, l'identification souhaitée est impossible. Par exemple, dans $\mathbb{R}[X]$, les idéaux $\langle 1 \rangle$ et $\langle X^2 + 1 \rangle$ correspondent au même ensemble algébrique de $\mathbb{R}$ : $\varnothing$. Nous remarquons d'ailleurs pourquoi nous travaillons bien dans un corps dès le départ (pour le moment), et pas un simple anneau : cela permet aux polynômes de la forme $aX-1$ avec $a$ élément de l'anneau considéré d'avoir une racine pour tout $a$ non nul. En outre, remarquons que nous travaillons dès lors dans des anneau intègres, car c'est bien le cas des corps par définition et des anneaux de polynômes sur ceux-ci par construction. Ainsi, si un polynôme est nul en un point, l'un de ses diviseurs aussi. En particulier, si un polynôme élevé à une certaine puissance est nul en un point, c'est le cas du polynôme lui-même. Ainsi, dans $k[X]$ avec $k$ un corps algébriquement clos, les idéaux $\langle X \rangle$ et $\langle X^2 \rangle$ correspondent au même ensemble algébrique de $k$ : $\{ 0_k \}$. Pour espérer obtenir l'identification dont nous rêvons, nous allons ainsi devoir nous restreindre à une classe d'idéaux réunissant les puissances et les "racines" de ses éléments : les idéaux \textit{radicaux}. Nous verrons bientôt que ce sont bien les deux seules obstruction à l'identification souhaitée.\\
+Ainsi, le Nullstellensatz, prouvé en 1893 par David Hilbert constitue l'un des théorèmes fondamentaux de la géométrie algébrique, souvent considéré aux côtés du théorème de la base et du théorème des syzygies tous deux dits \textit{de Hilbert}, que ce dernier a prouvé en 1890.\\
+
+Pour l'étudier, nous commencerons par donner quelques prérequis d'algèbre commutative, en nous concentrant sur les notions \textit{d'éléments entiers} et \textit{d'extensions de corps}, utiles pour comprendre le lemme de Zariski souvent considéré comme la forme algébrique du nullstellensatz et qui permet de le prouver, ainsi que sur la notion de \textit{radical d'un idéal}, fondamentale d'après la discussion qui précède. Nous expliciterons également quelques prérequis géométriques, en la notion \textit{d'ensemble algébrique} et par la topologie dite \textit{de Zariski} (autre grand nom de l'algèbre commutative et de la géométrie algébrique!). Nous pourrons ensuite nous concentrer sur les différentes formes du Nullstellensatz et les prouver, avant d'en donner quelques conséquences et quelques généralisations de notions d'algèbre commutative et de géométrie algébrique motivées par ses énoncés.
+
+\newpage
+\section{Quelques préliminaires}
+\subsection{Un peu d'algèbre commutative}
+Nous commençons ainsi par un peu d'algèbre commutative, branche des mathématiques étudiant les anneaux commutatifs et tous les objets qui y sont directement liés, comme les idéaux, les modules et les algèbres sur un anneau. Théorie laissant une grande place aux structures, elle peut être considérée comme la théorie \textit{locale} ou \textit{affine} de la géométrie algébrique, et c'est sur celle-ci que se concentrera ce texte.
+
+Dès lors, indiquons que tous les anneaux considérés dans ce texte sont supposés \textit{commutatifs} et \textit{unitaires}. En outre, fixons dès maintenant deux anneaux $A$ et $B$ ainsi qu'un corps $k$.
+
+\subsubsection{Algèbres, modules et algèbres de type fini}
+
+Commençons par une définition qui n'est pas supposée connue car elle n'a pas été étudiée dans nos cours : celle d'algèbre sur un anneau.
+
+\begin{definition}[\textbf{$A$-algèbre}]\label{def:alg}
+    Une \textit{$A$-algèbre} est un anneau $S$ muni d'un morphisme d'anneaux $f : A \longrightarrow S$. En identifiant $A$ à son image par $f$, cela fait de $S$ un $A$-module qui est aussi un anneau. Lorsque $f$ est injectif, on considère souvent $A$ comme un sous-anneau de $S$. \footnote{La définition donnée ici est généralement considérée comme étant celle d'une $A$-algèbre \textit{associative, commutative et unitaire}. Une $A$-algèbre $S$ est alors un $A$-module muni d'une loi de composition interne $A$-bilinéaire. En supposant que cette seconde loi de composition interne soit associative, commutative et unitaire, on retrouve bien le cas de la définition donnée ici : il suffit de considérer l'application $f : A \longrightarrow S$ qui à $1_A$ associe $1_S$ (le neutre pour la seconde loi de composition interne) et à $a \in A$ associe $f(a) = a \cdot f(1_A) = a \cdot 1_S$. C'est le seul morphisme de $A$-algèbres de $A$ dans $S$.}
+\end{definition}
+
+Après avoir défini une structure, il n'y a qu'une chose à faire : définir ses \textit{flèches}, c'est-à-dire ses \textit{morphismes} !
+
+\begin{definition}[\textbf{Morphisme d'algèbres}]\label{def:morph alg}
+    Un \textit{morphisme de $A$-algèbres} $(S, f : A \rightarrow S)$ et $(R, g : A \rightarrow R)$ est un morphisme d'anneau $\varphi : S \longrightarrow R$ tel que $g = \varphi \circ f$. C'est donc à la fois un morphisme d'anneaux et un morphisme de $A$-modules.
+
+    \begin{center}
+        \begin{tikzcd}
+            S \arrow[rr, "\phi"]               &  & R \\
+            A \arrow[u, "f"] \arrow[rru, "g"'] &  & 
+        \end{tikzcd}
+    \end{center}
+\end{definition}
+
+Bien sûr, les notions usuelles pour les anneaux de \textit{noyau} et \textit{d'image} d'un morphisme s'étendent en ce cadre, tout comme d'autres que nous ne prendrons pas la peine de rappeler.
+
+\begin{example} 
+Ci-dessous deux exemples simples de $A$-algèbres, le second en étant le plus important comme nous allons bientôt le voir.
+    \begin{itemize}
+        \item $A$ est une $A$-algèbre, donnée par le morphisme d'anneau identité de $A$ dans $A$;
+        \item L'anneau de polynômes $A[(X_i)_{i \in I}]$ en une famille d'indéterminées indexée par un ensemble $I$ est une $A$-algèbre, donnée par le morphisme d'inclusion canonique de $A$ dans $A[(X_i)_{i \in I}]$.
+    \end{itemize}  
+\end{example}
+
+Si l'exemple des anneaux de polynômes en $A$ est si important, c'est parce qu'il vérifie la \textit{propriété universelle} suivante.
+
+\begin{theorem}[\textbf{Propriété universelle des anneaux de polynômes}\footnote{Le lecteur initié à la théorie des catégories cherchera peut-être à traduire cette propriété en termes de morphisme universel. En notant $X$ l'ensemble des indéterminées considérées $(X_i)_{i \in I}$, la paire formée par l'anneau des polynômes $E$ sur $A$ en les $(X_i)_{i \in I}$ et l'application $u : X \longrightarrow E$ qui à tout élément de $X$ associe l'indéterminée correspondante dans E est le morphisme universel de $X$ dans le foncteur d'oubli défini sur la catégorie des $A$-algèbres et à valeurs dans celle des ensembles.}]\label{thm:prop univ ann poly}
+    Etant donnés un morphisme d'anneaux $\varphi : A \longrightarrow B$, un ensemble $I$, et des éléments $(b_i)_{i \in I}$ de $B$ indexés par $I$, il existe un unique morphisme d'anneaux $\psi : A[(X_i)_{i \in I}] \longrightarrow B$ tel que :
+    \begin{itemize}
+        \item $\psi(a) = \varphi(a)$ pour tout $a \in A$
+        \item $\psi(X_i) = b_i$ pour tout $i \in I$
+    \end{itemize}
+\end{theorem}
+
+\begin{proof}
+    La preuve, calculatoire mais directe, est laissée en exercice au lecteur. 
+\end{proof}
+
+On en déduit la propriété universelle analogue pour les $A$-algèbres, qui sera celle avec le plus d'intérêt pour nous.
+
+\begin{theorem}[\textbf{Propriété universelle des algèbres de polynômes}]\label{thm:prop univ alg poly}
+    Soit $(S, f : A \rightarrow S)$ une $A$-algèbre. Etant donnés un ensemble $I$, et des éléments de $S$ $(s_i)_{i \in I}$ indexés par $I$, il existe un unique morphisme d'algèbres $\psi : A[(X_i)_{i \in I}] \longrightarrow S$ tel que $\psi(X_i) = s_i$ pour tout $i \in I$.
+\end{theorem}
+
+ \begin{proof}
+     En notant $\iota_A$ l'inclusion canonique de $A$ dans $A[(X_i)_{i \in I}]$, d'après la définition d'un morphisme d'algèbres, le morphisme $\psi : A[(X_i)_{i \in I}] \longrightarrow S$ doit vérifier $\psi \circ \iota_A = f$. Cela signifie que $\psi$ doit être égal à $f$ sur $A$. Ainsi, on applique la propriété universelle des anneaux de polynômes à  $f$, $S$ et à la famille $(s_i)_{i \in I}$, et on obtient l'unique morphisme $\psi$ étendant $f$ souhaité.
+ \end{proof}
+
+\begin{example} 
+    Certaines utilisations de cette \textit{propriété universelle} sont sans doute bien connues du lecteur.
+    \begin{itemize}
+        \item Si nous considérons la $A$-algèbre $A$ et fixons un élément $a$ de $A$, le morphisme d'algèbres de $A[X]$ dans $A$ donné par la propriété universelle est celui d'évaluation d'un polynôme en $a$, souvent noté $ev_a$. En particulier, si $a = 0_A$, ce morphisme renvoie le coefficient constant d'un polynôme.
+        \item Etant donnés un corps $k$, un $k$-espace vectoriel $V$ et un endomorphisme $T$ de $V$, il existe un unique morphisme de $k$-algèbres $\psi : k[X] \longrightarrow \text{End}_k(V)$ vérifiant $\psi(X) = T$. C'est l'endomorphisme donnant une structure de $k[X]$-module à $(V, T)$, permettant d'identifier les couples formés d'un espace vectoriel sur $k$ et d'un endormorphisme de celui-ci avec les $k[X]$-modules, et ayant un rôle fondamental en théorie de la réduction.
+    \end{itemize}   
+\end{example}
+
+Nous pouvons dorénavant définir les notions de modules et d'algèbre \textit{de type fini}, primordiales pour étudier celle \textit{d'élément entier} et pour formuler et comprendre le Nullstellensatz.
+
+\begin{definition}[\textbf{Module et algèbre de type fini}]\label{def:mod tf}
+    On dit qu'un $A$-module $E$ est de \textit{type fini} s'il existe $d \in \mathbb{N}$ et une famille dite \textit{génératrice} $(e_i)_{i \in \llbracket 1, d \rrbracket} \in E^d$ tels que $E$ soit le plus petit sous-module de $E$ contenant la famille $(e_i)_{i \in \llbracket 1, d \rrbracket}$.\\
+    De la même manière, on dit qu'une $A$-algèbre $S$ est de \textit{type fini} s'il existe $d \in \mathbb{N}$ et une famille dite \textit{génératrice} $(s_i)_{i \in \llbracket 1, d \rrbracket} \in S^d$ tels que $S$ soit la plus petite sous-algèbre de $S$ contenant la famille $(s_i)_{i \in \llbracket 1, d \rrbracket}$.
+\end{definition}
+
+\begin{remark}
+   De manière équivalente, on dit qu'un $A$-module $E$ est de \textit{type fini} s'il existe un morphisme de $A$-modules surjectif $A^d \longrightarrow E$ avec $d \in \mathbb{N}$, et on dit qu'une $A$-algèbre $S$ est de \textit{type fini} s'il existe un morphisme de $A$-algèbres surjectif $A[(X_i)_{i \in \llbracket 1, d \rrbracket}] \longrightarrow S$ avec $d \in \mathbb{N}$.\\
+   Ainsi, tout $A$-module de type fini est le quotient d'un certain $A$-module $A^d$ avec $d \in \mathbb{N}$ et toute $A$-algèbre de type fini est le quotient d'une certaine algèbre de polynômes $A[(X_i)_{i \in \llbracket 1, d \rrbracket}] \longrightarrow S$ avec $d \in \mathbb{N}$. Cela en fait les $A$-algèbres de type fini "universelles", et nous omettrons généralement d'indiquer le morphisme de définition d'une telle algèbre à partir de maintenant.
+\end{remark}
+
+Enfin, terminons cette sous--sous-section avec un petit lemme facile mais fort utile.
+
+\begin{lemma}[\textbf{Transitivité de la propriété d'être de type fini}]\label{lem:trans tf}
+     Soient $A \subseteq B \subseteq C$ trois anneaux. Si $C$ est un $B$-module de type fini et $B$ est un $A$-module de type fini, alors $C$ est un $A$-module de type fini. 
+\end{lemma}
+
+\begin{proof}
+    Soient tels objets.\\
+    Fixons $\pi : A^d \longrightarrow B$ et $\rho : B^n \longrightarrow C$ respectivement un morphisme de $A$-modules et un morphisme de $B$-modules, tous deux surjectifs, avec $d, n \in \mathbb{N}$. Ces morphismes existent d'après la remarque suivant la définition \ref{def:mod tf}.\\
+    Puisque $A \subseteq B$, on peut voir $\rho$ comme un morphisme de $A$-modules.\\
+    En outre, remarquons que le morphisme $(\pi)_{i \in \llbracket 1, n \rrbracket} : (A^d)^n \longrightarrow B^n$ est également surjectif, ce dont on déduit que $\rho \circ (\pi)_{i \in \llbracket 1, n \rrbracket} : (A^d)^n \longrightarrow C$ est surjectif.\\
+    Finalement, par l'identification canonique $(A^d)^n \cong A^{dn}$, on a obtenu un morphisme de $A$-modules $A^{dn} \longrightarrow C$ surjectif : $C$ est un $A$-module de type fini.
+\end{proof}
+
+
+
+
+
+
+\newpage
+\subsubsection{Eléments entiers et extensions de corps}
+
+Soit $ f : A \longrightarrow B $ un morphisme d'anneaux. 
+
+D'après la propriété universelle des algèbres de polynômes \ref{thm:prop univ alg poly}, étant donné $b \in B$, il existe un unique morphisme de $A$-algèbres $ev_b : A[X] \longrightarrow B$ dit \textit{d'évaluation en $b$} vérifiant $ev_b(X) = b$. Pour $P \in A[X]$, l'image de $P$ par $ev_b$ est notée $P(b)$.
+
+Donnons la définition \textit{d'élément entier sur un anneau}, dont le nom sera justifié par un exemple donné par la suite.
+
+\begin{definition}[\textbf{Elément entier sur un anneau}]\label{def:entier}
+    Supposons que $A \subseteq B$. Un élément $b \in B$ est dit \textit{entier} sur $A$ s'il existe un polynôme unitaire $P(X) \in A[X] \subseteq B[X]$ vérifiant $P(b) = 0_B$.\\
+    Plus généralement, en partant d'un morphisme d'anneaux comme celui introduit ci-dessus, on dit que $b \in B$ est \textit{entier} sur A s'il existe $n \in \mathbb{N}$ et $(a_i)_{i \in \llbracket 0, n-1 \rrbracket} \in A^n$ tels que $b^n + \sum\limits_{i = 0}^{n-1} f(a_{i}) b^i = 0_B$. Cette équation est appelée \textit{relation de dépendance intégrale}. En identifiant $A$ à son image dans $B$ par $f$, on retrouve bien la première définition qui sera celle utilisée dans ce texte.
+\end{definition}
+
+On peut maintenant donner la définition d'un anneau \textit{entier} sur un autre.
+
+\begin{definition}[\textbf{Anneau entier et clôture intégrale}]\label{def:clot int}
+    Supposons que $A \subseteq B$. Si pour tout $x \in B$, $x$ est entier sur $A$, alors on dit que $B$ est \textit{entier} sur $A$ ou que $B$ est une \textit{algèbre entière} sur $A$ ou encore que $B$ est une \textit{extension entière} de $A$.
+    L'ensemble des éléments de $B$ entiers sur $A$, qui est une sous-$A$-algèbre de $B$ comme indiqué dans le corollaire \ref{thm:entier forme alg}, est appelé la \textit{clôture intégrale}  de $A$ dans $B$.
+\end{definition}
+
+\begin{example}
+    Donnons deux exemples visant à faire sentir cette notion.
+    \begin{itemize}
+        \item L'ensemble des rationnels entiers sur les entiers relatifs est l'ensemble des entiers.\\
+        En effet, soit $p/q \in \mathbb{Q}$ une fraction irréductible racine d'un polynôme unitaire à coefficients entiers. Soient $n \in \mathbb{N}$ et $(a_i)_{i \in \llbracket 0, n-1 \rrbracket} \in \mathbb{Z}^n$ tels que $\frac{p^n}{q^n} + \sum\limits_{i=0}^{n-1}a_i \frac{p^i}{q^i} = 0$. En multipliant chaque membre de cette égalité par $q_n$, on obtient $p^n + \sum\limits_{i=0}^{n-1}a_i p^i q^{n-i} = 0$ d'où $q(\sum\limits_{i=0}^{n-1}a_i p^i q^{n-1-i}) = -p^n$. Ainsi, $q$ divise $p^n$; or, la fraction $p/q$ étant supposée irréductible, cela implique que $q = \pm 1$ et $p/q \in \mathbb{Z}$. Réciproquement, tout entier $z \in \mathbb{Z}$ est racine du polynôme unitaire à coefficient entier $X - z$. L'ensemble des éléments de $\mathbb{Q}$ entiers sur $\mathbb{Z}$ est donc bien $\mathbb{Z}$, ce qui justifie l'appelation \textit{d'éléments entiers};
+        \item L'ensemble des entiers de Gauss $\mathbb{Z}[i]$ est entier sur $\mathbb{Z}$ puisque $i$ est racine du polynôme unitaire à coefficients entiers $X^2 + 1$ et par le lemme \ref{lem:entier corps} qui suit.
+    \end{itemize}  
+\end{example}
+
+Nous allons maintenant prouver un lemme qui nous sera bien utile, notamment pour démontrer le lemme de Zariski et donc le Nullstellensatz.
+
+\begin{lemma}\label{lem:entier corps}
+    Supposons $A$ et $B$ intègres. Si $A \subseteq B$ et si $B$ est entier sur $A$, alors $A$ est un corps si et seulement si $B$ est un corps.
+\end{lemma}
+
+\begin{proof}
+    Soient tels objets.\\
+    \fbox{$\Longrightarrow$} On suppose que A est un corps. Soit $b \in B \setminus \{0_B\}$. Puisque B est entier sur A, il existe $n \in \mathbb{N}$ et $(a_i)_{i \in \llbracket 0, n-1 \rrbracket} \in A^n$ tels que $b^n + \sum\limits_{i = 0}^{n-1} a_i b^i = 0_B$, que l'on fixe.\\
+    On a alors $b(b^{n-1} + \sum\limits_{i = 1}^{n-1} a_i b^{i-1}) = - a_0 $ donc $(-a_{0}^{-1}(b^{n-1} + \sum\limits_{i = 1}^{n-1} a_i b^{i-1}))b = 1_B$. 
+    Ainsi, $b$ est inversible. Ceci étant vrai pour tout $b \in B \setminus \{0_B\}$ et puisque $B$ est intègre, c'est un corps.
+
+    \noindent\fbox{$\Longleftarrow$} Supposons maintenant que $B$ est un corps. Soit $a \in A\setminus \{0_A\}$. Comme $A \subseteq B$, alors $a \in B$ donc $a$ a un inverse $a^{-1}$ dans $B$, que l'on notera $b$.\\
+    Alors il existe $n \in \mathbb{N}$ et $(a_i)_{i \in \llbracket 0, n-1 \rrbracket} \in A^n$ tels que $b^n + \sum\limits_{i = 0}^{n-1} a_i b^i = 0_B$, que l'on fixe. On a alors $b^n =- \sum\limits_{i = 0}^{n-1} a_i b^i$, et en multipliant chaque membre de cette égalité par $ a^{n-1}$ on obtient que $a^{-1} = - \sum\limits_{i = 0}^{n-1} a_i a^{n-1-i}$. FInalement, cela implique que $a^{-1} \in A$ donc c'est un corps. 
+\end{proof}
+
+La prochaine définition, bien que peu utile dans la suite du texte, nous servira au moins à énoncer un joli théorème de caractérisation des éléments entiers sur un anneau.
+
+\begin{definition}[\textbf{Annulateur d'un module}]\label{def:annulateur}
+    Etant donné $E$ un $A$-module, \textit{l'annulateur} de $E$ est l'ensemble Ann$_A(E) := \Bigl\{a \in A \; \Big| \; \forall x \in E, \; a \cdot x = 0_E \Bigr\}$.\\
+    On dit que $E$ est \textit{fidèle} si Ann$_A(E) = \{0_E\}$.
+\end{definition}
+
+\begin{remark}
+    L'annulateur d'un $A$-module est un idéal de $A$.
+\end{remark}
+
+Un $A$-module $E$ est dit fidèle si l'action de tout élément non nul de $A$ est non triviale, ou encore si la représentation associée $A \longrightarrow \text{End}_A(E)$ est injective : l'anneau $A$ est alors "fidèlement représenté" par son action sur $E$, aucune information n'est perdue puisque deux éléments distincts agissent différemment sur $E$.
+
+ Grâce à la définition de l'annulateur d'un module, nous pouvons énoncer et démontrer la caractérisation précédemment mentionnée des éléments entiers sur un anneau, dont nous tirerons deux corollaires fondamentaux.
+
+\begin{theorem}[\textbf{Caractérisations d'un élément entier}]\label{thm:lasse entier}
+    Supposons que $A$ soit un sous-anneau de $B$ et que ce dernier soit intègre. Soit $\beta \in B$. Les assertions suivantes sont équivalentes :\\
+    $\begin{array}{ll}
+        (i) &\beta \text{ est  entier sur } A\\
+        (ii) &\text{Le } A \text{-module } A[\beta] \text{ est de type fini} \\
+        (iii) &\text{Il existe un } A[\beta] \text{-module } E \text{ tel que } A[\beta] \subseteq E \text{ et } E \text{ soit un } A \text{-module} \\ &\text{de type fini} \\
+        (iv) &\text{Il existe un } A[\beta] \text{-module } F \text{ fidèle en tant que } A[\beta] \text{-module et de type} \\
+     &\text{fini comme } A \text{-module}
+    \end{array}$
+\end{theorem}
+
+\begin{proof}
+    Soient tels objets.
+
+    \fbox{$(i) \implies (ii) :$} Soit $P(X) \in A[X]$ tel que $P(\beta) = 0_B$, avec $n \in \mathbb{N}$.\\
+    Fixons un élément $c$ de $A[b]$. Il peut s'écrire $S(b)$ pour un certain polynôme $S(X) \in A[X]$, que l'on fixe.\\
+    Puisque $P(X)$ est unitaire, son coefficient dominant est trivialement inversible; on peut donc effectuer une division euclidienne de $S$ par $P$. On obtient deux polynômes $Q(x), R(x) \in A[X]$ vérifiant $S(X) = P(X)Q(X) + R(X)$ avec deg$R(X) < n-1$. Ainsi, $S(b) = R(b)$ est une combinaison linéaire de $(b_i)_{i \in \llbracket 0, n-1 \rrbracket}$.\\
+    Finalement, $A$-module $A[\beta]$ est engendré par $(\beta^i)_{i \in \llbracket 0, deg(P)-1 \rrbracket}$, qui en est une famille finie : il est de type fini.
+
+    \fbox{$(ii) \implies (iii), (iv) :$} On suppose que le $A$-module $A[\beta]$ est de type fini. En posant $E := A[\beta]$, $(iii)$ suit trivialement.\\
+    En outre, soit $a \in$ Ann$_{A[\beta]}(A[\beta])$. On a $a \cdot x = 0_{A[\beta]}$ pour tout $x \in A[\beta]$, et en particulier $a \cdot 1_{A[\beta]} = a = 0_{A[\beta]}$. Ainsi, Ann$_{A[\beta]}(A[\beta]) = {0_{A[\beta]}}$ et $F := A[\beta]$ est fidèle en tant que $A[\beta]$-module, tout en étant de type fini comme $A$-module. On a bien montré $(iv)$.
+
+    \fbox{$(iii), (iv) \implies (i)$ :} Soit $E$ un $A[\beta]$-module de type fini sur $A$. Fixons $d \in \mathbb{N^*}$ et $(e_i)_{i \in \llbracket 1, d \rrbracket}$ une famille génératrice de $E$ comme $A$-module.\\ 
+    Par définition, pour $j \in \llbracket 1, d \rrbracket$, il existe $(c_{ij})_{i \in \llbracket 1, d \rrbracket} \in A^d$ tel que $\beta e_j = \sum\limits_{i=1}^{d} c_{ij} e_i$. Fixons les pour tout $j \in \llbracket 1, d \rrbracket$, et notons $C$ la matrice qui les a pour coefficients.\\
+    Posons $L := A[\beta]^d$. C'est un $A[\beta]$-module libre, fixons $(l_i)_{i \in \llbracket 1, d \rrbracket}$ sa base canonique.\\
+    On considère le morphisme de $A[\beta]$-modules $\pi :
+    \begin{cases}
+        L &\longrightarrow E \\
+        l_i &\longmapsto e_i
+    \end{cases}$
+    , surjectif par construction.
+
+    La matrice $M := \beta Id_d - C$ est à coefficients dans $A[\beta]$, et donne un endomorphisme $\gamma : L \longrightarrow L$. Par construction, on a une suite exacte $L \overset{\gamma}{\longrightarrow} L \overset{\pi}{\longrightarrow} E$, i.e $\pi \circ \gamma : L \longrightarrow E$ est le morphisme nul.\\
+    En notant $M'$ la transposée de la comatrice de $M$ et $\gamma'$ l'endomorphisme de $L$ qui y est associé, on a $MM' = \delta Id_d$ avec $\delta =$ det$(M)$ donc $\gamma \circ \gamma'$ est l'endomorphisme de $L$ correspondant à la multiplication par $\delta$, élément de $A[\beta]$.\\
+    Soit $x \in E$. Par surjectivité de $\pi$, il existe un élément $y$ de $L$ tel que $x = \pi(y)$, que l'on fixe. On a alors $\delta x = \delta \pi(y) = \pi (\delta y) = \pi (\gamma \circ \gamma' (y))$ avec $\pi \circ \gamma$ le morphisme nul de $L$ dans $E$. Finalement, $\delta x = 0_E$.\\
+    Ainsi, nous avons $\delta E = {0_E}$.\\
+
+    Supposons $(iii)$ vérifié. On peut alors supposer que le $A[\beta]$-module $E$ sur lequel nous venons de raisonner contient $A[\beta]$. En particulier, $1_{A[\beta]} \in E$, d'où $\delta = 0_{A[\beta]}$.\\
+
+    Si $(iv)$ est vérifié, on peut supposer que $E$ est fidèle comme $A[\beta]$-module. Comme on a montré que $\delta \in$ Ann$_{A[\beta]} (E)$, on en déduit que $\delta = 0_{A[\beta]}$ par fidélité de $E$.\\
+
+    Dans tous les cas, nous avons montré que $\delta =$ det$(M)$, qui est l'évaluation en $\beta$ d'un polynôme unitaire de $A[X]$ par construction, est nul. Ainsi, $\beta$ est entier sur $A$.
+\end{proof}
+
+%Cayley-Hamilton pourrait se cacher derrière en faisant monter le niveau de l'eau, mais ici preuve directe ^
+
+\begin{corollary}[\textbf{Anneau des éléments entiers}]\label{thm:entier forme alg}
+    Supposons que $A \subseteq B$. L'ensemble des éléments de $B$ entiers sur $A$ est un sous-anneau de $B$ contenant $A$, et même une sous-$A$-algèbre de $B$ contenant $A$. 
+\end{corollary}
+
+\begin{proof}
+    On suppose que $A \subseteq B$. Fixons $b, c \in B$ entiers sur $A$.\\
+    D'après le théorème qui précède, dont on utilise le point $(ii)$, $A[b]$ est alors un $A$-module de type fini. En outre, remarquons que $c$ est trivialement entier sur $A[b]$, ce qui implique que $A[b, c] = A[b][c]$ est un $A[b]$-module de type fini d'après le même théorème.\\
+    Ainsi, d'après le lemme \ref{lem:trans tf}, $A[b, c]$ est de type fini sur $A$. Pour $x \in A[b, c]$, $A[x] \subseteq A[b, c]$, ce dont on déduit que $x$ est entier sur $A$ d'après le point $(iii)$ du théorème précédent. Finalement, tout élément de $A[b, c]$ est entier sur $A$, en particulier $b-c$, $bc$ et tout élément de $A$.\\
+    Le corollaire suit.
+\end{proof}
+
+\begin{corollary}[\textbf{Transitivité de l'entièreté}]\label{thm:trans intégralité}
+    Soient $C$ un anneau. Si $c \in C$ est entier sur $B$ et $B$ est entier sur $A$, alors $c$ est entier sur $A$. En particulier, si $C$ est entier sur $B$ et si $B$ l'est sur $A$, alors $C$ est entier sur $A$.
+\end{corollary}
+
+\begin{proof}
+    Soient tels objets.\\
+    Puisque $c$ est supposé entier sur $B$, on peut trouver un polynôme unitaire $P \in B[X] \subseteq C[X]$ tel que $P(c) = 0_C$. Fixons-le, et écrivons-le dans la base canonique de $B[X]$ : $P = X^n + \sum\limits_{i=0}^{n-1} b_iX^i$.\\
+    Par hypothèse, les $(b_i)_{i \in \llbracket 0, n-1 \rrbracket}$ sont entiers sur $A$. En itérant le raisonnement de la preuve du corollaire précédent, on en déduit que $A[(b_i)_{i \in \llbracket 0, n-1 \rrbracket}]$ est un $A$-module de type fini.\\
+    Puisque $c$ est entier sur $A[(b_i)_{i \in \llbracket 0, n-1 \rrbracket}]$, le théorème \ref{thm:lasse entier} implique que\\ $A[(b_i)_{i \in \llbracket 0, n-1 \rrbracket}][c]$ est de type fini sur $A[(b_i)_{i \in \llbracket 0, n-1 \rrbracket}]$, donc sur $A$ d'après le lemme \ref{lem:trans tf}.\\
+    Finalement, une nouvelle utilisation du théorème \ref{thm:lasse entier} nous indique que $c$ est bien entier sur $A$.
+\end{proof}
+
+Pour continuer sur notre voie, nous pouvons dorénavant définir les \textit{extensions de corps} et leurs cas \textit{algébriques}.
+
+\begin{definition}[\textbf{Extension de corps}]\label{def:extension corps}
+    Le corps $K$ est une \textit{extension de corps} de $k$ si $k \subseteq K$ et $k$ est un sous-corps de $K$, ou plus généralement s'il existe un morphisme de corps de $k$ dans $K$. \footnote{Un morphisme de corps étant nécessairement injectif, on peut alors identifier $k$ à un sous-corps de $K$, ce qui permet de retrouver une définition analogue à la première.} On note une telle extension $K/k$.
+\end{definition}
+
+\begin{remark}
+    Etant donné une extension de corps $K/k$, on montre aisément que $K$ est naturellement muni d'une structure de $k$-espace vectoriel.
+\end{remark} 
+
+\begin{example}
+    Voici deux exemples très classiques et bien connus.
+    \begin{itemize}
+        \item Le corps des nombres complexes $\mathbb{C}$ est une extension de corps de celui des réels $\mathbb{R}$;
+        \item Pour $p$ un nombre premier et $n \in \mathbb{N}^*$, l'unique corps de cardinal $p^n$ (à isomorphisme près) noté $\mathbb{F}_{p^n}$ est une extension de corps de $\mathbb{F}_p$, le corps à $p$ éléments.
+    \end{itemize} 
+\end{example}
+
+\begin{definition}[\textbf{Extension algébrique}]\label{def:ext alg}
+    Considérons une extension de corps $K/k$. On dit qu'un élément $x$ de $K$ est \textit{algébrique} sur $k$ s'il est racine d'un polynôme non nul à coefficients dans $k$. Si un élément $x$ de $K$ n'est pas algébrique sur $k$, il est dit \textit{transcendant}.\\
+    L'extension $K/k$ est elle-même dite \textit{algébrique} si tout élément de $K$ est algébrique sur $k$, et \textit{transcendante} sinon.\\
+    La clôture intégrale de $k$ dans $K$ est appelée \textit{clôture algébrique} de $k$ dans $K$.
+\end{definition}
+
+\begin{remark}
+    Nous pouvons remarquer que, étant donné une extension de corps $K/k$, un élément de $K$ est algébrique sur $k$ si et seulement s'il est entier sur $k$.
+\end{remark}
+
+Comme expliqué dans l'introduction, il est impératif que le corps d'étude soit \textit{algébriquement clos} pour que l'identification souhaitée grâce au Nullstellensatz soit viable. Donnons donc la définition d'un tel corps !
+
+\begin{definition}[\textbf{Corps algébriquement clos}]\label{def:corps clos}
+    On dit qu'un corps $k$ est algébriquement clos si tout polynôme non constant à coefficients dans $k$ admet au moins une racine dans $k$.
+\end{definition}
+
+Le prochain théorème est donné pour la culture, et ne sera pas démontré ici. Le lecteur en souhaitant une démonstration pourra se référer au théorème 3.6 du chapitre XXIV du livre \cite{Berhuy}.
+
+\begin{theorem}[\textbf{de Steinitz}]\label{thm:Steinitz}
+    Il existe une clôture algébrique de $k$ : c'est une extension $K/k$ algébrique sur $k$ et algébriquement close. De plus, deux clôtures algébriques de $k$ sont toujours reliées par un isomorphisme de corps laissant invariant les éléments de $k$.
+\end{theorem}
+
+De nouveau, il est temps de donner des définitions qui nous seront bien utiles, et qu'il s'agit surtout de ne pas confondre. Nous démontrerons ensuite deux lemmes basés sur ces nouvelles notions, basaux en théorie des extensions de corps.
+
+\begin{definition}[\textbf{Extension finie et de type fini}]\label{def:extension tf}
+    Considérons une extension de corps $K/k$. On dit que c'est une \textit{extension finie} si elle est de dimension finie en tant que $k$-espace vectoriel, i.e. si elle est de type fini comme $k$-module. 
+    On dit qu'elle est \textit{de type fini} si elle est de type fini en tant que $k$-algèbre.
+\end{definition}
+
+\begin{lemma}\label{lem:ext finie alg}
+    Soit $K/k$ une extension de corps finie. Alors elle est algébrique sur $k$. 
+\end{lemma}
+
+\begin{proof}
+    Soit $K/k$ une extension de corps finie. Fixons $\alpha \in K$.\\
+    On pose $n := \text{dim}_k(K)$ la dimension de $K$ comme $k$-espace vectoriel. La famille $(\alpha^i)_{i \in \mathbb{0, n}}$ contient $n+1$ éléments, elle est nécessairement liée sur $k$. Ainsi, il existe $(k_i)_{i \in \llbracket 0, n \rrbracket} \in k^n$ non tous nuls vérifiant $\sum\limits_{i=0}^{n} k_i \alpha^i = 0_K$. On pose $P(X) := \sum\limits_{i=0}^{n} k_i X^i$. C'est un polynôme non nul de $k[X]$ qui annule $\alpha$; on en déduit que $\alpha$ est algébrique sur $k$ et le lemme suit.
+\end{proof}
+
+\begin{lemma}\label{lem:alg corps}
+    Soit $k$ un corps et $A$ une $k$-algèbre intègre et de dimension finie en tant que $k$-espace vectoriel. Alors $A$ est un corps, donc une extension finie de $k$. 
+\end{lemma}
+
+\begin{proof}
+    Soient tels objets.
+    Fixons $a \in A \setminus \{0_A\}$. Considérons l'endomorphisme de $A$ vu comme un $k$-espace vectoriel donné par la multiplication par $a$ : 
+    $\begin{cases}
+        A &\longrightarrow A \\
+        x &\longmapsto ax
+    \end{cases}$\\
+    Puisque la multiplication dans $A$ est bilinéaire, c'est bien un endomorphisme de $k$-espace vectoriel. Par intégrité de $A$ et puisque $a$ n'est pas nul, le noyau de ce morphisme est réduit à $\{ 0_A \}$. Comme $A$ est de dimension finie en tant que $k$-espace vectoriel, on peut appliquer le théorème du rang, dont on déduit que cet endomorphisme est surjective. En particulier, il existe $a' \in A$ tel que $aa' = 1$. Par commutativité du produit, on a trouvé un inverse de $a$. Le résultat suit.
+\end{proof}
+
+\begin{remark}
+    Nous aurions également pu remarquer que, sous ces hypothèses, $A$ est entier sur $k$. L'application du lemme \ref{lem:entier corps} permet alors de conclure.
+\end{remark}
+
+
+
+
+
+
+\newpage
+\subsubsection{Radical d'un idéal}
+Soit $A$ un anneau commutatif.
+
+
+\flushleft\underline{Definition} -Soit $S\subset A $
+\\On appelle radical de $S$ l'ensemble :
+
+\centering $ \sqrt{S}:=\{ a\in A \; | \exists n \in \mathbb{N} \; a^n \in I \} $
+
+
+
+
+\flushleft\underline{Propriété:}Soit $I$ un idéal de $A$. Alors $\sqrt{I}$ est un idéal de $A$ contenant $S$.
+
+\underline{Preuve}:
+
+\item[•] $0 \; \in \sqrt{I}$ car $ 0 \in \ I$
+
+Soient $x$ , $y$ $ \in \sqrt{I}$. Il existe $n$ et $k$ $\in \mathbb{N}$ tels que $x^n \in I$ et $y^k \in I $. 
+\item[•] $(x-y)^{n+k}= \sum_{j=0}^{n+k} \binom{n+k}{j}x^j(-y)^{n+k-j}$. Chacun des termes de la somme est dans $I$ donc $ (x-y)^{n+k} \; \in I$.
+
+\item[•] $(xy)^{nk}=(x^n)^k((y)^k)^n \; \in I$ 
+
+Conclusion: $\sqrt{I}$ est un idéal de $I$.
+
+\vspace{1\baselineskip}
+
+\underline{Definition}: Un idéal radiciel est un idéal d’un anneau qui est son propre radical.
+
+\vspace{1\baselineskip}
+
+\underline{Propriété}:
+
+Le radical d’un idéal d’un anneau est radiciel
+
+\underline{Preuve}:
+
+Soit $I$ un idéal.
+\item[•] , $\sqrt{I} \subset \sqrt{\sqrt{I}} $ est claire
+\item[•]Reciproquement, soit $x \in A $ et $n \in \mathbb{N}$ tel que $x^n \in \sqrt{I} $. Soit maintenant $k \in \mathbb{N} $ tel que $(x^n)^k \in I $. On a donc que $x^{nk} \in I$, donc $x \in \sqrt{I}$. $\sqrt{\sqrt{I}} \subset \sqrt{I} $
+
+Conclusion: $\sqrt{\sqrt{I}} = \sqrt{I} $
+
+
+\underline{Définition:} On appelle nilradical l'ensemble \centering $ Nil(A):=\{ a\in A \; | \exists n \in \mathbb{N} \; a^n =0 \}$ l'ensemble des éléments nilpotents de A. C'est l'idéal $\sqrt(\{0\})$.
+\\
+\underline{Propsition:} Nil(A) est l'intersection de tous les idéaux premiers de A.
+\\
+\underline{Preuve:}
+Soit $p$ un idéal premier de A, x nilpotent et m tel que $x^m$ = 0. $x^m=0 \in p$ . Comme $p$ est premier, x $\in$  p.
+\\
+Réciproquement, montrons que si s n'est pas nilpotent, alors il existe un idéal premier auquel s n'appartient pas. On note E l'ensemble des idéaux de A qui ne contiennent aucune puissance de s. E est non vide car il contient (0) car s n'est pas nilpotent. L'inclusion munit de E un ordre inductif. D'après le lemme de Zorn, E a un élément maximal P. P est strictement inclus dans A. Montrons que P est premier: soient x et y des éléments de A qui n'appartiennent pas à P.
+Comme x n'est pas dans P, $ P \subsetneq Ax+P $. Comme P est maximal dans E, Ax+P n'est pas un élément de E et contient donc une puissance de s. Il existe $p \in P$, $k \in \mathbb{N}$, $a \in A$ tel que $s^k=p+ax$. De même, $q \in P$, $l \in \mathbb{N}$, $b \in A$ tel que $s^l=q+by$.
+$ s^{k+l} = (p+ax)(q+by) = pq + (ax)q + (by)p + (ab)(xy)$ donc $(ab)(xy) \not\in P$ et $xy \not\in P$. P est donc premier. D'où le résultat.
+
+
+\underline{Corollaire:} Si I est un idéal de A, alors $\sqrt(I)$ = $\bigcap_{p  \ premier \ I \subset p}^{} p $
+
+\subsection{Premiers pas en géométrie algébrique : ensembles algébriques et topologie de Zariski}
+
+\section{Le Nullstellensatz}
+\subsection{Le sens des différentes formes usuelles et leur équivalence}
+\subsection{Lemme de Zariski et preuve du Nullstellensatz}
+
+\section{Un aperçu de la puissance du Nullstellensatz}
+\subsection{Spectres d'anneaux}
+\subsubsection{Quelques définitions}
+\subsubsection{Conséquence du lemme de Zariski : morphisme induit entre spectres maximaux}
+\subsection{Vers la géométrie algébrique ou topologie de Zariski généralisée}
+\subsubsection{Une topologie sur des anneaux quelconque ? Quelle idée !}
+\subsubsection{Quelques propriétés pour défricher cette topologie}
+\subsection{Anneaux de Jacobson}
+\subsubsection{Une notion se cachant derrière le Nullstellensatz}
+\subsubsection{Lien entre anneaux de Jacobson et topologie de Zariski}
+
+\newpage
+\textbf{Lemme de Zariski et corollaires}
+
+\begin{lemma}\label{lem:local pas corps}
+    Soient $k$ un corps et $P$ un polynôme non nul de $k[X]$. L'anneau $k[X][\frac{1}{P}]$ n'est pas un corps.
+\end{lemma}
+
+\begin{proof}
+    Soient tels objets.
+    
+    Si deg($P$) = 0, on a $k[X][\frac{1}{P}] \cong k[X]$ qui n'est pas un corps : $X$ n'y est pas inversible.
+
+    Supposons dorénavant que deg($P$) $\geq 1$, et considérons le polynôme $1 + XP$ de $k[X]$, non nul car de degré strictement positif.\\
+    Supposons par l'absurde que $1 + XP$ est inversible dans $k[X][\frac{1}{P}]$. Notons $R$ son inverse, et écrivons-le sous sa forme réduite $R = \frac{Q}{P^n}$ avec $Q \in k[X]$ et $n \in \mathbb{N}$ minimal. On a $(1 + XP)R = (1 + XP)\frac{Q}{P^n} = 1$ dans $k[X][\frac{1}{P}]$, d'où $(1 + XP)Q = P^n$. En outre, deg($1 + XP$) $\geq 1$, ce qui implique que deg($(1+XP)Q$) $\geq 1$ et ainsi $n \geq 1$. Puisque $P$ est premier avec $1 + XP$, il divise $Q$ par le théorème de Gauss. Or cela signifie qu'il existe $Q' \in k[X]$ vérifiant $(1+XP)Q' = P^{n-1}$, contredisant la minimalité de $n$. C'est absurde. Par principe de raisonnement par l'absurde, on en déduit que $1 + XP$ n'est pas inversible dans $k[X][\frac{1}{P}]$ : ce n'est pas un corps.
+\end{proof}
+
+\begin{theorem}[\textbf{Lemme de Zariski}]\label{thm:lem Zariski}
+    Soient $k$ un corps et $A$ une $k$-algèbre de type fini. Si $A$ est un corps, alors $A$ est une extension algébrique finie de $k$.
+\end{theorem}
+
+\begin{proof}
+    Soient $k$ un corps, et $A$ une $k$-algèbre de type fini qui est aussi un corps. On raisonne par récurrence sur son nombre de générateurs comme $k$-algèbre.
+
+    S'il n'y a pas de générateur, $A = k$ est trivialement une extension algébrique finie de $k$. 
+
+    On suppose dorénavant que $A$ est engendré par un nombre non nul $n+1$ d'éléments, avec $n \in \mathbb{N}$, et que le résultat est vrai pour toute $k$-algèbre engendrée par $n$ générateurs qui est également un corps.\\
+    Soient $(x_i)_{i \in \llbracket 0, n \rrbracket}$ des générateurs de $A$ comme $k$-algèbre.\\
+    Considérons $k(x_0)$ le corps des fractions de $k[x_0]$, inclus dans $A$. On remarque que $A = k(x_0)[(x_i)_{i \in \llbracket 1, n \rrbracket}]$, i.e. que $A$ est engendrée par $(x_i)_{i \in \llbracket 1, n \rrbracket}$ sur $k(x_0)$. Par hypothèse de récurrence, on en déduit que $A$ est algébrique sur $k(x_0)$. Il existe donc des polynômes $(P_i)_{i \in \llbracket 1, n \rrbracket} \in k(x_0)[T]$, que l'on peut supposer unitaires, tels que $P_i(x_i) = 0$ pour $i \in \llbracket 1, n \rrbracket$. Fixons-les.\\
+    Il reste à vérifier que $x_0$ est algébrique sur $k$.\\
+    Soit $f \in k[x_0]$ le produit des dénominateurs intervenant dans les coefficients des $(P_i)_{i \in \llbracket 1, n \rrbracket}$, non nul par définition. Pour tout $i \in \llbracket 1, n \rrbracket$, les coefficients de $P_i$ appartiennent à la sous-algèbre $k[x_0][\frac{1}{f}]$ de $k(x_0)$. Par construction, $A$ est entier sur $k[x_0][\frac{1}{f}]$. D'après le lemme (\textit{numérotation manquante}) prouvé à la fin de la section 2, $A$ étant un corps, cela signifie que $k[x_0][\frac{1}{f}]$ en est également un.\\
+    Supposons par l'absurde que $x_0$ est transcendant sur $k$. Comme $x_0$ n'est alors annulé par aucun polynôme de $k[X]$, on en déduit que $k[X] \cong k[x_0]$. Fixons un isomorphisme entre ces deux $k$-algèbres, et notons $P$ l'élément de $k[X]$ correspondant à $f$, non nul car $f$ ne l'est pas. On a $k[x_0][\frac{1}{f}] \cong k[X][\frac{1}{P}]$. D'après le lemme ci-dessus, cela contredit le fait que $k[x_0][\frac{1}{f}]$ est un corps. C'est absurde. Par principe de raisonnement par l'absurde, on en déduit que $x_0$ est algébrique sur $k$.\\
+    Finalement, $x_0$ est algébrique sur $k$ donc $k[x_0]$ est un corps d'après le lemme \textit{numérotation manquante}, ce qui implique qu'il est égal à son corps des fractions. En outre, les $(x_i)_{i \in \llbracket 1, n \rrbracket}$ sont algébriques sur $k[x_0]$, donc sur $k$ d'après le lemme \ref{lem:trans tf} puisque sur un corps il n'y a pas de distinction entre "être entier" et "être algébrique". $A$ est donc la composée d'un nombre fini d'extensions algébriques finies de $k$ : c'est une extension algébrique finie de $k$.
+\end{proof}
+
+\textbf{Topologie de Zariski}
+%La topologie de Zariski contient "en germes" la géométrie arithmétique/lien géométrie et arithmétique (ou plutôt "en éléments de la limite inductive des anneaux de fonctions régulières image des ouverts contenant un point par le faisceau structural" :nerd:)
+
+\textbf{Morphisme induit sur les spectres maximaux}
+
+\begin{theorem}[\textbf{Morphisme induit entre les spectres maximaux de $k$-algèbres}]\label{thm:morph induit Spm k-alg}
+    Soient $k$ un corps et $A$, $B$ des $k$-algèbres de type fini. Soit également $f : A \longrightarrow B$ un morphisme de $k$-algèbres. Etant donné un idéal maximal $\mathfrak{m}$ de $B$, sa préimage $f^{-1}(\mathfrak{m})$ par $f$ est un idéal maximal de $A$. Ainsi, $f$ induit une application Spm $B \longrightarrow$ Spm $A$.   
+\end{theorem}
+
+\begin{proof}
+    Soient tels objets. \\
+    Donnons-nous un idéal maximal $\mathfrak{m}$ de $B$, et posons $\mathfrak{p} := f^{-1}(\mathfrak{m})$. Nous souhaitons montrer que $\mathfrak{p}$ est un idéal maximal de $A$.\\
+    Tout d'abord, remarquons que c'est un idéal premier de $A$ puisque $\mathfrak{m}$ est lui-même un idéal premier de $B$.\\
+    En outre, $B/\mathfrak{m}$ est une $k$-algèbre de type fini puisque $B$ l'est, et c'est un corps car $\mathfrak{m}$ est maximal. D'après le lemme \ref{thm:lem Zariski} de Zariski, c'est donc une extension algébrique finie de $k$, c'est-à-dire un $k$-espace vectoriel de dimension finie sur $k$. 
+    Par passage au quotient et par définition de $\mathfrak{p}$, $f$ induit un morphisme injectif de $k$-algèbres de $A/\mathfrak{p}$ dans $B/\mathfrak{m}$, et en particulier un morphisme injectif de $k$-espaces vectoriels. On en déduit que $A/\mathfrak{p}$ est lui-même un $k$-espace vectoriel de dimension finie.\\
+    Comme $A/\mathfrak{p}$ est également intègre car $\mathfrak{p}$ est premier, on en déduit que c'est un corps d'après le lemme \ref{lem:alg corps}.\\
+    Ainsi, $\mathfrak{p}$ est un idéal maximal de $A$.  
+\end{proof}
+
+\begin{lemma}\label{lem:corps Z-alg tf fini}
+    Soient $A$ une $\mathbb{Z}$-algèbre de type fini et $I$ un idéal premier de $A$. Si $I$ est maximal, alors le corps résiduel $A/I$ est une extension algébrique finie d'un certain corps fini $\mathbb{F}_q$ (où $q$ est premier). En particulier, $A/I$ est fini.
+\end{lemma}
+
+\begin{proof}
+    Soient tels objets. Supposons $I$ maximal.\\
+    Par passage au quotient, on a un morphisme $\mathbb{Z} \longrightarrow A/I$. Celui-ci n'est pas injectif : autrement, à isomorphisme près, on aurait $\mathbb{Q} \subseteq A/I$. Or $\mathbb{Z}$ est noethérien car principal, donc $A/I$ qui est un $\mathbb{Z}$-module de type fini comme quotient d'un $\mathbb{Z}$-module de type fini est un $\mathbb{Z}$-module noethérien. Ainsi, il ne peut contenir de sous-$\mathbb{Z}$-module qui n'est pas de type fini comme $Q$. Finalemement, le morphisme induit $\mathbb{Z} \longrightarrow A/I$ n'est pas injectif, et a pour noyau un certain $n\mathbb{Z}$ avec $n \mathbb{N}^*$ fixé. Puisque le morphisme induit $\mathbb{Z}/n \mathbb{Z} \longrightarrow A/I$ est lui-même injectif et car $A/I$ est intègre puisque $I$ est un idéal premier, on en déduit que $\mathbb{Z}/N \mathbb{Z}$ est intègre, i.e. que $n$ est premier. Nous le noterons dorénavant $q$.\\
+    Ainsi, $A/I$ est une $\mathbb{F}_q$-algèbre, de type fini car $A$ est une $\mathbb{Z}$-algèbre de type fini donc $A/I$ également et $q\mathbb{Z} =$ Ann$_\mathbb{Z}(A/I)$ par ce qui précède. Comme $A/I$ est également un corps, on peut appliquer le lemme \ref{thm:lem Zariski} de Zariski, dont on déduit que $A/I$ et une extension algébrique finie de $\mathbb{F}_q$.
+\end{proof}
+
+\begin{theorem}[\textbf{Morphisme induit entre les spectres maximaux de $\mathbb{Z}$-algèbres}]\label{thm:morph induit Spm Z-alg}
+    Soient $A$ et $B$ des $\mathbb{Z}$-algèbres de type fini. Soit également $f : A \longrightarrow B$ un morphisme de $\mathbb{Z}$-algèbres. Etant donné un idéal maximal $\mathfrak{m}$ de $B$, sa préimage $f^{-1}(\mathfrak{m})$ par $f$ est un idéal maximal de $A$. Ainsi, $f$ induit une application Spm $B \longrightarrow$ Spm $A$.   
+\end{theorem}
+
+\begin{proof}
+    Soient tels objets.\\
+    Donnons-nous un idéal maximal $\mathfrak{m}$ de $B$, et posons $\mathfrak{p} := f^{-1}(\mathfrak{m})$, qui est un idéal premier de $A$ comme préimage d'un idéal premier de $B$ par un morphisme d'anneaux.\\
+    On a un morphisme injectif de $\mathbb{Z}$-algèbres induit par $f$ de $A/\mathfrak{p}$ dans $B/\mathfrak{m}$. Ce dernier est une extension algébrique finie de $\mathbb{F}_q$ pour un certain $q \in \mathbb{N}^*$ premier fixé d'après le lemme \ref{lem:corps Z-alg tf fini} qui précède. Ainsi, le morphisme injectif de $\mathbb{Z}$-algèbres induit par $f$ est même un morphisme de $\mathbb{F}_q$-algèbres, et $A/\mathfrak{p}$ est un sous-$\mathbb{F}-q$-espace vectoriel de $B/\mathfrak{m}$, donc de dimension finie en tant que tel en plus d'être une $\mathbb{F}_q$ algèbre intègre. D'après le lemme \ref{lem:alg corps} c'est donc un corps, et $\mathfrak{p}$ est maximal dans $A$.
+\end{proof}
+
+Application induite sur les points d'une variété algébrique !
+
+
+
+\textbf{Ensembles algébriques}
+
+Soit k un corps commutatif, on note $k^{n} = A^{n}$ \textit{l'espace affine} de $k$. C'est l'ensemble des parties de $A^{n}$ définies comme l'ensemble des racines d'un polynome de $k[X_{1},...,X_{n}]$.
+
+Le cercle unité dans $\mathbb{R}^{2}$ est un élément de de $A^{n}$ défini comme $C= \{(x,y) \in \mathbb{R}^{2} , x^{2} + y^{2} - 1 = 0 \} $ 
+
+
+\centering
+\begin{tikzpicture}
+\draw (0,0) circle (2cm);
+\draw (0,3) -- (0,-3);
+\draw (-3,0) -- (3,0);
+\end{tikzpicture}
+
+
+\flushleft \textbf{Autres exemples} :\\
+ $Z_{1}=\{(x,y) \in \mathbb{R}^{2},\ y = x^{2}  \}$\\
+ $Z_{2} = \{(x,y) \in \mathbb{R} ^{2}, \ x^{3} +  y^{2} = yx^{2} + xy \}  = \{(x,y) \in \mathbb{R} ^{2}, \ x = y\} \cup Z_{1}$  car \ $x^{3} + y^{2} - yx^{2} - xy = (y-x^{2})(y-x) $
+\\ $ Z{3} =\{(x,y,z) \in \mathbb{Q}^{3},\ x^{n} + y^{n} = z^{n}\} $   \ \ \ \ \ ($n\geq 1 $)
+
+\underline{Définitions} 
+\\
+Soit k un corps et n $\geq 1$ et S un partie de $k$[$X_{1},...,X_{n}$]. On appelle \textit{ensemble algébrique défini par S} : \\ \center $V(S) = \left\{  (x_{1}, ... , x_{n}) \in A^{n} , \forall P \in S , \ P(x_{1}, ... , x_{n}) = 0 \ \right\}$
+\flushleft
+
+Si R est une partie de $A^{n}$, on définit \textit{l'idéal de R} :
+\center
+I(R) =$\left\{  P \in k[X_{1},...,X_{n}], \  \forall(x_{1}, ... , x_{n}) \in R \ P(x_{1}, ... , x_{n}) = 0  \right\}$
+
+\underline{Propositions} - Soit S,S' des parties de $k$[$X_{1},...,X_{n}$] et Z,Z' des parties de $A^{n}$. Alors :
+
+ (1) Si $S \subset  S' $ alors $V(S') \subset V(S) $
+\\(2) Si $I = (S)$ alors $V(I) =V(S) $
+\\(3) $S \subset I(V(S))$
+\\ (4) Si $Z \subset Z'$ alors $I(Z') \subset I(Z)$
+\\ (5) $I(Z)$ est un idéal de $k[X_{1},...,X_{n}]$
+\\ (6) $I(Z \ \cup \ Z') = I(Z)\ \cap \ I(Z')$
+\\ (7) $Z\subset V(I(Z)) $ avec égalité si et seulement si $Z$ est un ensemble algébrique
+
+\underline{Preuve} - \\ (1), (4) et (6) proviennent des défintions, pareil pour (3) et pour la première partie de (7).
+\\ Montrons (5), soit $P_{1},P_{2} \in I(Z)$ alors sur $Z$ car $P_{1}$ et $P_{2}$ s'annulent donc $P_{1} + P_{2}, \lambda P_{1}$ aussi pour $\lambda \in k$ et donc $\forall Q \in k[X_{1},...,X_{n}], \ P_{1}Q$ s'annule également sur Z alors $I(Z)$ est bien un idéal de $k[X_{1},...,X_{n}]$.
+\\ Montons (2), par (1) on $V(I) \subset V(S)$. Soit $P \in I$ alors il existe $ Q_{i} \in S $ et $R_{i} \in k[X_{1},...,X_{n}]$ tel que $P = \sum_{i} P_{i}Q_{i} $. Donc en prenant $ x \in V(S)$, on a $Q_{i}(x) = 0 \  \ \forall i$ donc $ P(x) = 0$, ce qui implique $V(S) \subset V(I)$. D'ou l'égalité.
+\\ Montrons la deuxième partie de (7), on suppose que $Z = V(I(Z))$ alors $Z$ est un ensemble algébrique. Si $Z$ est un ensemble algébrique, alors il existe $S \in k[X_{1},...,X_{n}]$ tel que $Z =V(S)$, par définition $S \subset I(Z)$ et par (1) $V(I(Z)) \subset V(S)$ ce qui donne l'inclusion réciproque.
+
+\underline{Corollaire} - Les applications $I$ et $V$ sont des bijections réciproques entre les ensembles algébriques de $ A^{n}$ et les idéaux de $k[X_{1},...,X_{n}]$ de la forme $I(Z)$
+
+\underline{Preuve} - Provient entièrement de la proposition (7). 
+
+
+\flushleft
+\textbf{Lemme de Zariski et corollaires}
+
+\underline{Lemme} - Soient $k$ un corps et $P$ un polynôme non nul de $k[X]$. L'anneau $k[X][\frac{1}{P}]$ n'est pas un corps.
+
+
+\underline{Corollaire 1} - 
+Si $k$ est un corps algébriquement clos alors les idéaux maximaux de $k$[$X_{1},...,X_{n}$] sont du type ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) où $a_{1},..., a_{n} \in  k $
+\\
+\underline{Preuve} : Montrons d'abord que  I = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) pour $a_{1},..., a_{n} \in  k $ est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\ On note 
+$ \phi : k[X_{1},...,X_{n}] \longrightarrow k $ tel que $\phi(P) =P(a_{1},..., a_{n})$
+c'est un morphisme surjectif d'anneaux, on prends P dans Ker($\phi$) et on fait la division euclidienne de P par $ X_{1} - a_{1} $ puis du reste par les autres $X_{i} - a_{i}$ pour $ i \geq 2 $ 
+\\
+
+\centering 
+$P = (X_{1} - a_{1})Q_{1} + \ ... \ + (X_{n} - a_{n})Q_{n} + P(a_{1},..., a_{n} ) $ avec $Q_{i} \in k[X_{1},...,X_{n}] $
+\\
+\flushleft Or on sait que $\phi( P) = 0$ donc $ P \in I  $ et Ker($\phi$)\ $\subset$ I , car il est clair que I $\subset$ Ker($\phi$), alors I = Ker($\phi$). En quotientant, on obtient que  $k[X_{1},...,X_{n}]/I \simeq k $ et donc I est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\
+Montrons désormais le resultat énoncé, soit I un ideal maximal de $k[X_{1},...,X_{n}]$ alors  $k[X_{1},...,X_{n}]/I$ est une k-algèbre de type fini engendrée par $ \pi(X_{1}),...,\pi(X_{n})$ où $ \pi : k[X_{1},...,X_{n}] \longrightarrow k[X_{1},...,X_{n}]/I $ la projection canonique donc une extension algébrique finie de k d'après le lemme de Zariski, car k est algébriquement clos on a $k[X_{1},...,X_{n}]/I = k$. Finalement, on peut prendre $a_{1},..., a_{n} \in  k $ tel que $X_{i} - a_{i} \in I\ \ , \ \forall i = {1, ... , n} $. On regarde ce que vaut $X_{i} $ mod$[\ I\ ]$.  \\ Donc $(X_{1} - a_{1}, ... ,  X_{n} - a_{n}) \subset I $ comme ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) est maximal alors I = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$)
+
+
+\underline{Corollaire 2} - \\
+Soit $k$ un corps algébriquemnt clos et I un idéal de $k[X_{1},...,X_{n}] $  qui n'est pas (1) alors V(I) $\neq \emptyset$.
+
+\underline{Preuve} - \\
+Soit J un idéal maximal de $k[X_{1},...,X_{n}] $ qui contient I alors il existe $a_{1},..., a_{n} \in  k $ tel que J = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) donc $\forall P \in I$ on a $P(a_{1},..., a_{n}) = 0$ et donc $(a_{1},..., a_{n}) \in V(I) $ et donc $V(I)$ est non vide.
+
+\underline{Corollaire 3}- \\
+Soit $k$ un corps algébriquement clos et R un ensemble algébrique de $A^{n}$ défini par l'idéal J. Alors $I(R) = \sqrt{J}$ racine de J.
+
+\underline{Preuve} -\\
+- Si $ P \in \sqrt{J} $ alors il existe $m \geq 1$ tel que $ P ^{m} \in J$. Or avec la définition de $R =V(J) = \left\{  (x_{1}, ... , x_{n}) \in A^{n} , \forall P \in J , \ P(x_{1}, ... , x_{n}) = 0 \ \right\}$ donc pour tout $x \in R$, on a $P^{m}(x) = 0$ et donc finalement que $P(x) = 0$ et donc $P \in I(R)$ car $P$ annule tous les éléments de R.
+
+- Si $P \in I(R)$, $k[X_{1},...,X_{n}] $ étant noethérien, il existe $P_{1},..., P_{m} $ dans $k[X_{1},...,X_{n}] $ tels que $J = (P_{1},..., P_{m})$. On remarque que pour l'idéal $ S = (P_{1},..., P_{m},1-TP) $ de $k[X_{1},...,X_{n},T]  ,\ V(S) $ est vide. En effet, si on prend $x \in V(S)$ alors $xP(x) = 1$ et $x \in V(J)$, or $P \in I(V(J))$ donc $P(x) = 0$ et donc $xP(x) = 1$ est absurde.\\ Par le corollaire précédent, on a que $S = (1) =k[X_{1},...,X_{n},T]$. \\
+Donc on peut trouver $Q_{j} \in k[X_{1},...,X_{n},T]$ pour $1 \le j \le m$ tels que 
+
+\centering 
+$\sum_{j = 1}^m P_{j}Q_{j} \ + (1- TP)Q_{0} = 1$
+\flushleft En prenant $T= 1/P$ dans cette équation on obtient
+
+\centering $\sum_{j = 1}^m P_{j}(X_{1},...,X_{n})Q_{j}(X_{1},...,X_{n},1/P)  = 1$
+\flushleft Soit $ r\geq 1$ tel que $r$ soit plus grand que le degré des $Q_{j}$ en la variable $T$, de tel sorte que $ \forall \ 1 \le j \le m$ on ait $P^{r} Q_{j}(X_{1},...,X_{n},1/P) \in k[X_{1},...,X_{n}]$. Cela donne donc :
+
+\centering $P^{r} = \sum_{j = 1}^m P_{j}(X_{1},...,X_{n})P^{r}Q_{j}(X_{1},...,X_{n},1/P) $ 
+\flushleft Cela implique que $P^{r} \in (P_{1},..., P_{m}) = J$ et finalement $P \in \sqrt{J}$.
+
+Donc $I(V(J)) = \sqrt{J}$
+
+
+
+\flushleft
+\textbf{Les formes courantes du Nullstellensatz}
+Soit $k$ un corps algébriquement clos.
+\\ Le Nullstellensatz s'énonce sous trois formes équivalentes:
+\flushleft a)\underline{Existence de zéros:}
+\\Soit I un idéal strict de  $k[X_{1},...,X_{n}] $  alors V(I) $\neq \emptyset$.
+\flushleft b)\underline{Forme faible:}
+\\ Les idéaux maximaux de $k$[$X_{1},...,X_{n}$] sont du type ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) où $a_{1},..., a_{n} \in  k $.
+\flushleft c)\underline{Forme forte:} \\
+Soit J un idéal de $k$[$X_{1},...,X_{n}$] alors $I((V(J)) = \sqrt{J}$.
+\vspace{1\baselineskip}
+\\ 
+Ce théorème, démontré par Hilbert, fait le lien entre la géometrie et l'algèbre, puisqu'il
+établit via la forme “faible”, une bijection entre les points de $k^n$ et les idéaux maximaux de $k$[$X_{1},...,X_{n}$].
+\\ Nous verrons que ces trois théorèmes sont des corollaires du lemme de Zariski, mais on peut déjà montrer qu'ils sont équivalents:
+\vspace{1\baselineskip}
+\\ \underline{Preuve:} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\item[•] $ a) \Rightarrow b) $ 
+Montrons d'abord que  $I$ = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) pour $a_{1},..., a_{n} \in  k $ est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\ On note 
+$ \phi : k[X_{1},...,X_{n}] \longrightarrow k $ tel que $\phi(P) =P(a_{1},..., a_{n}) $
+c'est un morphisme surjectif d'anneaux, on prends P dans Ker($\phi$) et on fait la division euclidienne de P par $ X_{1} - a_{1} $ puis du reste par les autres $X_{i} - a_{i}$ pour $ i \geq 2 $ 
+\\
+
+\centering 
+$P = (X_{1} - a_{1})Q_{1} + \ ... \ + (X_{n} - a_{n})Q_{n} + P(a_{1},..., a_{n} ) $ avec $Q_{i} \in k[X_{1},...,X_{n}] $
+\\
+\flushleft Or on sait que $\phi( P) = 0$ donc $ P \in I  $ et Ker($\phi$)\ $\subset$ I , car il est clair que I $\subset$ Ker($\phi$), alors I = Ker($\phi$). En quotientant, on obtient que  $k[X_{1},...,X_{n}]/I \simeq k $ et donc $I$ est un idéal maximal de $ k$[$X_{1},...,X_{n}$] et il est égal à $V({a_{1},..., a_{n}})$.
+\\
+Soit $I$ un idéal maximal de $ k[X_{1},...,X_{n}]$. On suppose que  $ V(I) \neq \emptyset$. Soit  $(a_{1},..., a_{n}) \in V(I) $. Alors $I\subset I(V({a_{1},..., a_{n}}))  $ =$(X_{1} - a_{1}, ... ,  X_{n} - a_{n})$. 
+Comme $I$ est maximal, $I$ = $(X_{1} - a_{1}, ... ,  X_{n} - a_{n})$. D'où l'implication.
+
+\item[•] $ b) \Rightarrow a) $ Soit J un idéal maximal de $k[X_{1},...,X_{n}] $ qui contient I alors il existe $a_{1},..., a_{n} \in  k $ tel que J = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) donc $\forall P \in I$ on a $P(a_{1},..., a_{n}) = 0$ et donc $(a_{1},..., a_{n}) \in V(I) $ et donc $V(I)$ est non vide.
+\\ \item[•] $ a) \Rightarrow c) $ Soit R=$I(J)$. 
+\\ Si $ P \in \sqrt{J} $ alors il existe $m \geq 1$ tel que $ P ^{m} \in J$. Or avec la définition de $R =V(J) = \left\{  (x_{1}, ... , x_{n}) \in A^{n} , \forall P \in J , \ P(x_{1}, ... , x_{n}) = 0 \ \right\}$ donc pour tout $x \in R$, on a $P^{m}(x) = 0$ et donc finalement que $P(x) = 0$ et donc $P \in I(R)$ car $P$ annule tous les éléments de R.
+
+- Si $P \in I(R)$, $k[X_{1},...,X_{n}] $ étant noethérien, il existe $P_{1},..., P_{m} $ dans $k[X_{1},...,X_{n}] $ tels que $J = (P_{1},..., P_{m})$. On remarque que pour l'idéal $ S = (P_{1},..., P_{m},1-TP) $ de $k[X_{1},...,X_{n},T]  ,\ V(S) $ est vide. En effet, si on prend $x \in V(S)$ alors $xP(x) = 1$ et $x \in V(J)$, or $P \in I(V(J))$ donc $P(x) = 0$ et donc $xP(x) = 1$ est absurde.\\ Par le corollaire précédent, on a que $S = (1) =k[X_{1},...,X_{n},T]$. \\
+Donc on peut trouver $Q_{j} \in k[X_{1},...,X_{n},T]$ pour $1 \le j \le m$ tels que 
+
+\centering 
+$\sum_{j = 1}^m P_{j}Q_{j} \ + (1- TP)Q_{0} = 1$
+\flushleft En prenant $T= 1/P$ dans cette équation on obtient
+
+\centering $\sum_{j = 1}^m P_{j}(X_{1},...,X_{n})Q_{j}(X_{1},...,X_{n},1/P)  = 1$
+\flushleft Soit $ r\geq 1$ tel que $r$ soit plus grand que le degré des $Q_{j}$ en la variable $T$, de tel sorte que $ \forall \ 1 \le j \le m$ on ait $P^{r} Q_{j}(X_{1},...,X_{n},1/P) \in k[X_{1},...,X_{n}]$. Cela donne donc :
+
+\centering $P^{r} = \sum_{j = 1}^m P_{j}(X_{1},...,X_{n})P^{r}Q_{j}(X_{1},...,X_{n},1/P) $ 
+\flushleft Cela implique que $P^{r} \in (P_{1},..., P_{m}) = J$ et finalement $P \in \sqrt{J}$.
+
+Donc $I(V(J)) = \sqrt{J}$
+
+\item[•] $ c) \Rightarrow a) $ Par contraposée: soit $I$ un idéal de $k[X_{1},...,X_{n}]$. Si $V(I) = \emptyset$, alors $\sqrt{I} = $ I(V(I))$   =   $ I($\emptyset$) $= k[X_{1},...,X_{n}]$. Donc $1 \in \sqrt{I} $ et $  1 \in \sqrt{I} $ 
+
+
+\flushleft
+\textbf{Lemme de Zariski et corollaires}
+
+\underline{Corollaire: Forme faible du Nullstellensatz } - 
+Si $k$ est un corps algébriquement clos alors les idéaux maximaux de $k$[$X_{1},...,X_{n}$] sont du type ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) où $a_{1},..., a_{n} \in  k $
+\\
+\underline{Preuve} : On a déjà vu que  $I$ = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) pour $a_{1},..., a_{n} \in  k $ est un idéal maximal de $ k$[$X_{1},...,X_{n}$].
+\\ Montrons désormais le resultat énoncé, soit $I$ un ideal maximal de $k[X_{1},...,X_{n}]$ alors  $k[X_{1},...,X_{n}]/I$ est une k-algèbre de type fini engendrée par $ \pi(X_{1}),...,\pi(X_{n})$ où $ \pi : k[X_{1},...,X_{n}] \longrightarrow k[X_{1},...,X_{n}]/I $ \  la projection canonique donc une extension algébrique finie de k d'après le lemme de Zariski, car k est algébriquement clos on a $k[X_{1},...,X_{n}]/I = k $. Finalement, on peut prendre $a_{1},..., a_{n} \in  k $ tel que $X_{i} - a_{i} \in I\ \ , \ \forall i = {1, ... , n} $. On regarde ce que vaut $X_{i} $ mod$[\ I\ ]$.  \\ Donc $(X_{1} - a_{1}, ... ,  X_{n} - a_{n}) \subset I $ comme ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$) est maximal alors $I$ = ($X_{1} - a_{1}, ... ,  X_{n} - a_{n}$)
+
+\textbf{Topologie de Zariski}
+
+\underline{Définition} - Les fermés de la topologie de Zariski sont les $V(I)$ où $I$ est un idéal de $k[X_{1},...,X_{n}]$ ( les ensembles algébriques de $A^{n}$)
+
+\underline{Proposition} - 
+On a que $ \cap \ V(I_{k}) = V(\sum I_{k}) $ et $V(I_1 ) \cup V( I_2) = V(I_1 \cap I_2) = V(I_1 I_2) $
+
+\underline{Proposition} - Si Z est une partie de $A^{n}$ alors $V(I(Z)) $ est l'adhérende de Z dans $A^n$ pour la topologie de Zariski.
+
+\underline{Démonstration} - 
+
+Si $J$ est un idéal de $k[X_1, . . . , X_n]$, on a $Z \subset V (J)$ si et
+seulement si pour tout $ P \in J$ et tout $x \in Z$, $P(x) = 0$, autrement dit, si
+et seulement si pour tout $P \in I$, $P \in I(Z)$, c’est-à-dire $J \subset I (Z)$.
+
+\underline{Proposition} - La topologie de Zariski sur $A^n$ est noethérienne. Autrement dit toute intersection décroissante  de fermé de $A^n$ est stationnaire.
+
+
+
+\textbf{Remarque} -  Soit T une topologie. On a clairement équivalence entre :
+\item[•] T est noethérienne ;
+\item[•] toute suite croissante d'ouverts stationne ;
+\item[•] toute famille non vide d'ouverts admet un élément maximal ;\item[•] toute suite décroissante de fermés stationne ;\item[•]toute famille non vide de fermés admet un élément minimal.
+
+\underline{Démonstration} - 
+\\ Soit $(F_\omega) $ une famille décroissante de fermés de $A^n$ alors la famille $I(F_\omega)$ d'idéaux de $k[X_{1},...,X_{n}]$ est non vide donc admet un élément maximum $I(F_{\omega_{0}})$ car $k[X_{1},...,X_{n}]$ est noethérien. Donc $\forall \omega $ on a , $V(I(F_{\omega_{0}})) \subset V(I(F_\omega))$ donc $F_{\omega_{0}} \subset F_{\omega}$ donc la famille $(F_\omega) $ admet un élément minimal.
+
+\underline{Définition} - On dit qu'une partie non vide $Z$ de $A^n$ est irréductible si pour touts $Z_1, Z_2$ fermés de $A^n$ tel que $Z \subset Z_1 \cup Z_2$ alors $Z\subset Z_1$ ou $Z \subset Z_2$.
+
+\underline{Proposition} - Un ensemble algébrique $Z$ est irréductible si et seulement si son idéal $I(Z)$ est premier dans $k[X_{1},...,X_{n}]$.
+
+\underline{Démonstration} - \\ Supposons que $Z$ est irreductible. $Z$ est non de donc 1 ne s'annule pas sur $Z$ et $I(Z) \neq k[X_{1},...,X_{n}]$. soit $f,g \in k[X_{1},...,X_{n}]$ tel que $fg \in I(Z)$ alors $Z \subset V(fg) = V(f) \cup V(g) $. Quitte à échanger, on peut supposer que $Z \subset V(f)$ donc $f \in I(Z)$ et $I(Z)$ est premier.
+
+Supposons que $I(Z)$ est un idéal premier. On va montrer un petit lemme. \\
+\underline{Lemme d'évitement} - Soit A un anneau, si $I,J$ et $p$ idéaux de $ A$. Si $p$ est premier et $IJ\subset p$ alors $I \subset p$ ou $J\subset p$.
+\\ \underline{Preuve} - \\ Si $ I \not\subset p$ alors il existe $x \in I$ tel que $x \not\in p$ pareil si $J \not\subset p$, il existe $y\in J$ et $y \not\in p$. Alors $xy \in IJ $ or p premier $xy \not\in p$. D'où $IJ \not\subset p$.
+\\ Donc si $Z = Z_1 \cup Z_2$ alors $I(Z) = I(Z_1) \cap I(Z_2) $ alors par le lemme d'évitement $I(Z)= I(Z_1)$ ou $I(Z)= I(Z_2)$. Donc $Z= Z_1$ ou $Z = Z_2$.
+
+
+
+On va donner ici quelques définitions permettant d'énoncer une propriété importante sur les points fermés pour la topologie de Zariski
+
+\underline{Définition} - Soit A un anneau, on appelle le spectre de $A$, $Spec(A) = \{ I \subset A | \ I $ idéal premier$ \}$.
+
+\underline{Défintion} - Soit A un anneau et $f \in A$, on définit $D(f) = Spec(A[\frac{1}{f}])$
+
+\textbf{Remarque } $D(f)$ est en bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$
+
+\underline{Proposition} - Soit $k$ un corps et A un $k$- algèbre de type fini alors l'ensemble des points fermés de $Spec(A)$ est dense dans $Spec(A)$.
+
+\underline{Démonstration} - \\ Donc $D(f)$ est bijection avec les idéaux premiers de $A$ qui ne contiennent pas $f$ par la remarque au dessus. D'où les $D(f)$ pour $f \in A$ forment une base  de la topologie de Zariski. $A[\frac{1}{f}]$ est une $k$- algèbre de type fini car $A$ l'est. Donc par le morphisme naturel  $ A \longrightarrow A[\frac{1}{f}] $, les images réciproques d'idéaux premiers de $A[\frac{1}{f}]$ sont premiers dans $A$. Tout $D(f)$ contient au moins un idéal premier, donc $Spec(A)$ également. Donc tous les ouverts d'une base de la topologie de Zariski contient au moins un point fermé de $Spec(A)$.
+
+
+\textbf{Anneau de Jacobson}
+Soit A un anneau commutatif. On dit que A est Jacobson si tout idéal premier de A est intersection d'idéaux maximaux de A.
+\\
+$\underline{Exemple:} \mathbb{Z}$ est de Jacobson puisque ses idéaux premiers sont les $p\mathbb{Z}$ pour $p$ premier, qui sont exactement les idéaux maximaux de $\mathbb{Z}$.
+\\
+\underline{Théorème: généralisation du Nullstellensatz }Si $R$ est un anneau de Jacobson, et $S$ une $R$-algèbre de type fini, alors $S$ est un anneau de Jacobson. De plus, si $n$ est un idéal maximal de S, alors $$n \cap R$$ est un idéal maximal de R et $S/n$ est une extension algébrique finie de $R/m$.
+
+
+\underline{Théorème:}
+Soit R un anneau commutatif.
+\\
+
+Les propositions suivantes sont équivalentes:
+\\ a) R est un anneau de Jacobson 
+\\ b) Si $p\subset R$ est un idéal premier et $S= R/p$ contient b non nul tel que $S[1/b]$ est
+un corps, alors $S$ est un corps.
+\\
+\underline{Démonstration:}
+\\
+\item[•] $ a) \Rightarrow b) $ Montrons que $(0)$ est un idéal maximal de $S$. Supposons a) et l’hypothèse de b). Comme R est de Jacobson, S l’est aussi donc l’intersection de tous ses idéaux maximaux est incluse dans l’intersection de ses idéaux premiers, qui est son
+nilradical. Or $S$ est intègre car $p$ est premier donc $\bigcap_{m  \ maximal }^{} m $ = $(0)$. Maintenant, les idéaux premiers de S[1/b] correspondant bijectivement aux idéaux premiers de S ne contenant pas b, et S[1/b] étant un corps, on sait qu’il n’y a qu’un seul
+idéal de S ne contenant pas b, c’est (0). Ainsi, (0) apparaît dans $\bigcap_{m  \ maximal }^{} m $ , sinon cette intersection contiendrait b. $(0)$ est maximal donc $S$ est un corps.
+\\
+\item[•] $ b) \Rightarrow a) $ On suppose b). Soit $Q$ un idéal premier de R. Montrons que $Q= $$\bigcap_{m  \ maximal, \ Q \subset m }^{} m $. Supposons l'inclusion stricte et prenons un élément f dans le membre de droite qui n'est pas dans celui de gauche. Par le lemme de Zorn, il existe un idéal premier p maximal parmi les idéaux premiers $I$ de $R$ vérifiant  $Q \subset I \subsetneq (Q,f)$. $p$ n'est pas maximal car $ I \subsetneq (Q,f) \subset $ $\bigcap_{m  \ maximal, \ Q \subset m }^{} m $, qui est un idéal strict de $R$. Donc $R/p$ n'est pas un corps. Mais $p$ engendre dans $R[1/f]$ un idéal maximal $(p[1/f])$ maximal donc $(R/p)[1/f]$ = $R[1/f]/p[1/f] $ est un corps et donc $R/p$ est un corps.
+
+\vspace{1\baselineskip}
+
+
+\textbf{Lien avec la topologie de Zariski}
+
+
+Soit A un anneau commutatif. k un corps algebriquement clos.
+\\ 
+On a déjà défini la topologie de Zariski sur $k^n$, en déclarant fermés les ensembles algebriques de $k^n$.
+Soit I un idéal de $k[X_{1},...,X_{n}]$, d'après la forme forte du Nullstellensatz, $I((V(I)) = \sqrt{I}$. Comme, $\sqrt{I}$ = .$\bigcap_{p  \; premier \; I \subset p} p $, et que $V(I)= V(\sqrt(I))$, on peut définir une topolgie (qu'on appelle toujours topologie de Zariski) sur Spec($k[X_{1},...,X_{n}]$) en définisant les fermés comme étant V(I)= $\{ p  \; ideal \; premier \; I \subseteq p \}$.
+
+\
+On peut de même définir une topologie sur Spec A pour A un anneau en définissant les fermés: V(I)= $ \{ p \ ideal \ premier \; | I \subset p \}$ pour I idéal de A. Un point de spec A  est dit fermé si le singleton correspondant est un fermé de spec A (ce qui équivaut, par le théorème de Krull, à être un
+idéal maximal).
+
+
+
+
+\underline{Proposition:}
+Les assertions suivantes sont équivalentes:
+\\ a) A est un anneau de Jacobson
+\\ b) Pour toute partie fermée non-vide V(I) $\subset$ spec A, l’ensemble des points fermés est dense dans V(I).
+
+\underline{Preuve:}
+\\ 
+\item[•] $ a) \Rightarrow b) $ soit un fermé V(I). On veut montrer que tout ouvert de tout $p \in V(I)$ rencontre $ \{I \subset m \ | \ m \ maximal \} $. Soit donc $p \in V(I)$ et Spec $A  \backslash Z(J) $ un ouvert de p . Ainsi $p \notin Z(J)$ donc p ne contient pas J. On veut donc trouver un idéal maximal de A qui contient I mais pas J. Comme A est de Jacobson, p est intersection d’idéaux maximaux le contenant : or un des idéaux de l’intersection doit ne pas contenir J, sinon p
+le contiendrait. 
+\\
+\item[•] $ b) \Rightarrow a) $ On suppose b). D'après la preuve de l'implication précédente, pour un idéal de A et p $\in V(I)$, alors pour tout $J \not\subset V(I) $, il existe $m$ maximal tel que $J \not\subset m$ et $I \subset m$.Soit p un idéal premier de A. Montrons que p = $\bigcap_{m  \ maximal \ p \subset m}^{} m $. L'inclusion directe est claire. Montrons l'inclusion réciproque. On prend $I \leftarrow p$, $J  \leftarrow$ $\bigcap_{m  \ maximal \ p \subset m}^{} m $, qui donne l'existence d'un iéal maximal m' tel que  $p \subset m'$ et $\bigcap_{m  \ maximal \ p \subset m}^{} m $ $\not\subset$ $m'$, ce qui est absurde. D'où le résultat.
+
+\newpage
+\printbibliography[
+heading=bibintoc,
+title={Références}
+]
 
 \end{document}
